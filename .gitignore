@@ -5,3 +5,9 @@ CMakeLists.txt
 .idea
 
 cmake-build-debug
+
+bin
+
+obj
+
+project_ds.layout

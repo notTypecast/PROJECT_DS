@@ -4,7 +4,7 @@
 namespace utils {
     namespace array {
         template <typename T>
-        bool compare(T arr1[], size_t arr1Size, T arr2[], size_t arr2Size);
+        bool compare(T arr1[], std::size_t arr1Size, T arr2[], std::size_t arr2Size);
     }
 }
 

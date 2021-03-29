@@ -23,6 +23,7 @@ void algo::merge(int arr[], int left, int middle, int right) {
     j = 0; //index of right subarray
     int k = left; //index of merged array
 
+
     while (i < leftArraySize && j < rightArraySize) {
         if (tmpLeftArr[i] <= tmpRightArr[j]) {
             arr[k] = tmpLeftArr[i++];

@@ -8,4 +8,6 @@ void tests::test_mergeSort() {
 
     algo::mergeSort(unsorted, 0, 5);
 
+    assert(utils::array::compare<int>(unsorted, 6, expected, 6));
+
 }

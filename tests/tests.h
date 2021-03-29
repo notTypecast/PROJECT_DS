@@ -1,4 +1,5 @@
 #include <cassert>
+#include "../include/utils.h"
 #ifndef TESTS_H
 #define TESTS_H
 

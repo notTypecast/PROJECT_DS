@@ -1,4 +1,4 @@
-#include "../../include/algo/algo.h"
+#include "../../include/algo.h"
 
 void algo::merge(int arr[], int left, int middle, int right) {
     //get size of subarrays
@@ -21,7 +21,7 @@ void algo::merge(int arr[], int left, int middle, int right) {
 
     i = 0; //index of left subarray
     j = 0; //index of right subarray
-    int k = l; //index of merged array
+    int k = left; //index of merged array
 
     while (i < leftArraySize && j < rightArraySize) {
         if (tmpLeftArr[i] <= tmpRightArr[j]) {

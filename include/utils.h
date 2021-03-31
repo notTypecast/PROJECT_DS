@@ -11,7 +11,7 @@ namespace utils {
         bool compare(const T arr1[], std::size_t arr1Size, const T arr2[], std::size_t arr2Size);
 
         template <typename T>
-        T[] duplicate(T[] arr, std::size_t arrSize);
+        T* duplicate(T arr[], std::size_t arrSize);
     }
 }
 

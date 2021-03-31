@@ -2,7 +2,7 @@
 #include "../include/algo.h"
 
 void tests::test_mergeSort() {
-    int initial[] = utils::array::duplicate(tests::unsorted, tests::UNSORTEDSIZE)
+    int *initial = utils::array::duplicate<int>(tests::unsorted, tests::UNSORTEDSIZE);
 
     algo::mergeSort(initial, 0, tests::UNSORTEDSIZE - 1);
 
@@ -11,7 +11,7 @@ void tests::test_mergeSort() {
 }
 
 void tests::test_quickSort() {
-    int initial[] = utils::array::duplicate(tests::unsorted, tests::UNSORTEDSIZE);
+    int *initial = utils::array::duplicate<int>(tests::unsorted, tests::UNSORTEDSIZE);
 
     algo::quickSort(initial, 0, tests::UNSORTEDSIZE - 1);
 

@@ -17,10 +17,10 @@ bool utils::array::compare(const T arr1[], std::size_t arr1Size, const T arr2[],
 }
 
 template <typename T>
-T* utils::array::duplicate(T arr[], std::size_t arrSize) {
-    T newArr[] = new T[arrSize];
+T* utils::array::duplicate(const T arr[], std::size_t arrSize) {
+    T *newArr = new T[arrSize];
 
-    for (int i = 0; i < arrSize; ++i) {
+    for (std::size_t i = 0; i < arrSize; ++i) {
         newArr[i] = arr[i];
     }
 

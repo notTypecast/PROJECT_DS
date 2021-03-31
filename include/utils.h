@@ -2,6 +2,8 @@
 #define UTILS_H
 
 #include <cstdio>
+#include <string>
+#include <ctime>
 
 namespace utils {
 
@@ -15,6 +17,26 @@ namespace utils {
         template <typename T>
         T* duplicate(const T arr[], std::size_t arrSize);
     }
+
+    namespace stock {
+        struct StockDayData {
+            std::time_t timestamp;
+            float open;
+            float high;
+            float low;
+            float close;
+            unsigned int volume;
+            int openInt;
+        };
+
+    }
+
+    namespace date {
+        std::time_t convertStringToTimestamp(const std::string &dateStr);
+        std::string convertTimestampToString(std::time_t dateTimestamp);
+
+    }
+
 }
 
 #include "../src/utils/array.tpp"

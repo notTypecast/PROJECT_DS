@@ -1,7 +1,9 @@
-#include <cassert>
-#include "../include/utils.h"
 #ifndef TESTS_H
 #define TESTS_H
+
+#include <iostream>
+#include <cassert>
+#include "../include/utils.h"
 
 namespace tests {
     const int unsorted[] = {5, 1, 0, 18, 4, 7};

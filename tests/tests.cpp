@@ -6,7 +6,11 @@ void tests::test_mergeSort() {
 
     algo::mergeSort(initial, 0, tests::UNSORTEDSIZE - 1);
 
+    std::cout << "Testing mergeSort... ";
+
     assert(utils::array::compare<int>(initial, tests::UNSORTEDSIZE, tests::expected, tests::UNSORTEDSIZE));
+
+    std::cout << "passed" << std::endl;
 
 }
 
@@ -15,5 +19,9 @@ void tests::test_quickSort() {
 
     algo::quickSort(initial, 0, tests::UNSORTEDSIZE - 1);
 
+    std::cout << "Testing quickSort... ";
+
     assert(utils::array::compare<int>(initial, tests::UNSORTEDSIZE, tests::expected, tests::UNSORTEDSIZE));
+
+    std::cout << "passed" << std::endl;
 }

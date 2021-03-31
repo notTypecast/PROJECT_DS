@@ -5,5 +5,7 @@
 int main() {
     tests::test_mergeSort();
 
+    tests::test_quickSort();
+
     return 0;
 }

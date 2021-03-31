@@ -1,13 +1,19 @@
 #include "tests.h"
 #include "../include/algo.h"
 
-
 void tests::test_mergeSort() {
-    int unsorted[] = {5, 1, 0, 18, 4, 7};
-    int expected[] = {0, 1, 4, 5, 7, 18};
+    int initial[] = utils::array::duplicate(tests::unsorted, tests::UNSORTEDSIZE)
 
-    algo::mergeSort(unsorted, 0, 5);
+    algo::mergeSort(initial, 0, tests::UNSORTEDSIZE - 1);
 
-    assert(utils::array::compare<int>(unsorted, 6, expected, 6));
+    assert(utils::array::compare<int>(initial, tests::UNSORTEDSIZE, tests::expected, tests::UNSORTEDSIZE));
 
+}
+
+void tests::test_quickSort() {
+    int initial[] = utils::array::duplicate(tests::unsorted, tests::UNSORTEDSIZE);
+
+    algo::quickSort(initial, 0, tests::UNSORTEDSIZE - 1);
+
+    assert(utils::array::compare<int>(initial, tests::UNSORTEDSIZE, tests::expected, tests::UNSORTEDSIZE));
 }

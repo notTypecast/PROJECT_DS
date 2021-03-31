@@ -15,3 +15,14 @@ bool utils::array::compare(T arr1[], std::size_t arr1Size, T arr2[], std::size_t
 
     return true;
 }
+
+template <typename T>
+T[] utils::array::duplicate(T[] arr, std::size_t arrSize) {
+    T[] newArr = new T[arrSize];
+
+    for (int i = 0; i < arrSize; ++i) {
+        newArr[i] = arr[i];
+    }
+
+    return newArr;
+}

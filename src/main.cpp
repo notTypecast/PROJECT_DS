@@ -7,5 +7,10 @@ int main() {
 
     tests::test_quickSort();
 
+
+    utils::date::convertTimestampToString(1617974105);
+
+    std::cout << utils::date::convertTimestampToString(1617974105) << std::endl;
+
     return 0;
 }

@@ -4,6 +4,9 @@
 #include <cstdio>
 #include <string>
 #include <ctime>
+#include <iostream>
+#include <sstream>
+#include <cstdlib>
 
 namespace utils {
 
@@ -32,9 +35,10 @@ namespace utils {
     }
 
     namespace date {
+    	const int YEARTOSECONDS = 31536000; // not taking leap years into account
+    	const int DAYTOSECONDS = 86400;
         std::time_t convertStringToTimestamp(const std::string &dateStr);
         std::string convertTimestampToString(std::time_t dateTimestamp);
-
     }
 
 }

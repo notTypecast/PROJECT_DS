@@ -14,7 +14,7 @@ utils::stock::StockDayData* partI::loadStockData(const std::string &filePath) {
 
 	std::string* currLine;
 	do {
-		currLine = reader.getrow(
+		currLine = reader.getrow();
 
 	} while (currLine[0].empty());
 

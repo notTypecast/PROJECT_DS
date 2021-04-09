@@ -8,9 +8,16 @@ int main() {
     tests::test_quickSort();
 
 
-    utils::date::convertTimestampToString(1617974105);
 
-    std::cout << utils::date::convertTimestampToString(1617974105) << std::endl;
+    utils::csv::CSVReader reader("../data/agn.us.txt");
+    std::size_t counter = 0;
+	std::string *row;
+
+	while (reader.getrow() != nullptr) {
+		++counter;
+	}
+
+	std::cout << counter << std::endl;
 
     return 0;
 }

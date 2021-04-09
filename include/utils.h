@@ -7,6 +7,8 @@
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
+#include <fstream>
+#include <algorithm>
 
 namespace utils {
 
@@ -39,6 +41,25 @@ namespace utils {
     	const int DAYTOSECONDS = 86400;
         std::time_t convertStringToTimestamp(const std::string &dateStr);
         std::string convertTimestampToString(std::time_t dateTimestamp);
+    }
+
+    namespace csv {
+		class CSVReader {
+		public:
+			CSVReader(const std::string &filePath);
+
+			~CSVReader();
+
+			std::string *getrow();
+
+			std::size_t getTotalColumns();
+
+
+		private:
+			std::size_t TOTALCOLUMNS;
+			std::ifstream fileReaderStream;
+			std::string *parserow(const std::string &rowStr);
+		};
     }
 
 }

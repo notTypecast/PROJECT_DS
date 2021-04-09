@@ -1,23 +1,12 @@
 #include <iostream>
-#include "../tests/tests.h"
 #include "../include/utils.h"
 
 int main() {
-    tests::test_mergeSort();
-
-    tests::test_quickSort();
-
-
-
     utils::csv::CSVReader reader("../data/agn.us.txt");
-    std::size_t counter = 0;
-	std::string *row;
+    std::cout << reader.getTotalRows() << std::endl;
 
-	while (reader.getrow() != nullptr) {
-		++counter;
-	}
-
-	std::cout << counter << std::endl;
+    std::string *row = reader.getrow();
+    std::cout << row[0] << std::endl;
 
     return 0;
 }

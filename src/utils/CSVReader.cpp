@@ -4,9 +4,19 @@ utils::csv::CSVReader::CSVReader(const std::string &filePath) {
 	fileReaderStream.open(filePath, std::ifstream::in);
 	if (!fileReaderStream.good()) throw std::exception();
 
+	TOTALROWS = 0;
+	std::string temp;
+	while (fileReaderStream.good()) {
+		getline(fileReaderStream, temp);
+		++TOTALROWS;
+	}
+	fileReaderStream.clear();
+	fileReaderStream.seekg(0);
+
 	std::string firstLine;
 	getline(fileReaderStream, firstLine);
 	TOTALCOLUMNS = std::count(firstLine.begin(), firstLine.end(), ',') + 1;
+
 
 }
 
@@ -25,6 +35,10 @@ std::string* utils::csv::CSVReader::getrow() {
 
 std::size_t utils::csv::CSVReader::getTotalColumns() {
 	return TOTALCOLUMNS;
+}
+
+std::size_t utils::csv::CSVReader::getTotalRows() {
+	return TOTALROWS;
 }
 
 std::string* utils::csv::CSVReader::parserow(const std::string &rowStr) {

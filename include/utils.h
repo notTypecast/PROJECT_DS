@@ -47,16 +47,15 @@ namespace utils {
 		class CSVReader {
 		public:
 			CSVReader(const std::string &filePath);
-
 			~CSVReader();
 
 			std::string *getrow();
-
 			std::size_t getTotalColumns();
-
+			std::size_t getTotalRows();
 
 		private:
 			std::size_t TOTALCOLUMNS;
+			std::size_t TOTALROWS;
 			std::ifstream fileReaderStream;
 			std::string *parserow(const std::string &rowStr);
 		};

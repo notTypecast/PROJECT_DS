@@ -1,13 +1,14 @@
 #ifndef UTILS_H
 #define UTILS_H
-
 #include <cstdio>
 #include <string>
 #include <ctime>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
+#include <chrono>
 #include <fstream>
+#include <functional>
 #include <algorithm>
 
 namespace utils {
@@ -25,7 +26,7 @@ namespace utils {
 
     namespace stock {
         struct StockDayData {
-            std::time_t timestamp;
+            std::string date;
             float open;
             float high;
             float low;
@@ -34,13 +35,8 @@ namespace utils {
             unsigned int openInt;
         };
 
-    }
+        void printStockStruct(StockDayData data);
 
-    namespace date {
-    	const int YEARTOSECONDS = 31536000; // not taking leap years into account
-    	const int DAYTOSECONDS = 86400;
-        std::time_t convertStringToTimestamp(const std::string &dateStr);
-        std::string convertTimestampToString(std::time_t dateTimestamp);
     }
 
     namespace csv {
@@ -61,9 +57,19 @@ namespace utils {
 		};
     }
 
+    namespace timer {
+        /// \brief Times execution of a function.
+        /// \param funcToTime Function to time.
+        /// \returns Time in microseconds.
+        template <typename F>
+        std::time_t timeit(F funcToTime);
+    }
+
 }
 
 #include "../src/utils/array.tpp"
 #include "../src/utils/utils.tpp"
+#include "../src/utils/timer.tpp"
+
 
 #endif

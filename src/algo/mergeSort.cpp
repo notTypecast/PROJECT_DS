@@ -23,9 +23,14 @@ void algo::merge(utils::stock::StockDayData* data, int left, int middle, int rig
     int k = left; //index of merged array
 
     while (i < leftArraySize && j < rightArraySize) {
-        // sorting by open value
-        // if open values are equal, then timestamp will be used to sort
-        if (tmpLeftArr[i].open < tmpRightArr[j].open || (tmpLeftArr[i].open == tmpRightArr[j].open && tmpLeftArr[i].timestamp < tmpRightArr[j].timestamp)) {
+        /* sorting by open value
+         * if open values are equal, then date will be used to sort
+         * String comparison works because each individual character will be compared
+         * until a non-equal character is found
+         * Dates have the same format YYYY-MM-DD
+         * UTF-8 (and ASCII) character codes for numbers are in order, i.e '0'<'1'<...
+         */
+        if (tmpLeftArr[i].open < tmpRightArr[j].open || (tmpLeftArr[i].open == tmpRightArr[j].open && tmpLeftArr[i].date < tmpRightArr[j].date)) {
             data[k] = tmpLeftArr[i++];
         }
         else {

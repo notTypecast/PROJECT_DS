@@ -20,6 +20,29 @@ std::time_t utils::date::convertStringToTimestamp(const std::string &dateStr) {
 		}
 	}
 
+	// calculating months in seconds
+	for (int i = 1; i < month; ++i) {
+		// special case for February
+		if (i == 2) {
+			// checking if current year is leap year
+			if ((year % 400 == 0) || (year % 4 == 0 && year % 100 != 0)) {
+				dateTimestamp += 29 * utils::date::DAYTOSECONDS;
+			} else {
+				dateTimestamp += 28 * utils::date::DAYTOSECONDS;
+			}
+			continue;
+		}
+
+		if (((month - 1) % 7) % 2) {
+			dateTimestamp += 30 * utils::date::DAYTOSECONDS;
+		} else {
+			dateTimestamp += 31 * utils::date::DAYTOSECONDS;
+		}
+	}
+
+	// adding current day to timestamp
+	dateTimestamp += day * utils::date::DAYTOSECONDS - utils::date::DAYTOSECONDS/2;
+
 	return dateTimestamp;
 
 }

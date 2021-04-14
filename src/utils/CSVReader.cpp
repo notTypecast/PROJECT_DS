@@ -33,15 +33,15 @@ std::string* utils::csv::CSVReader::getrow() {
 	return parserow(row);
 }
 
-std::size_t utils::csv::CSVReader::getTotalColumns() {
+std::size_t utils::csv::CSVReader::getTotalColumns() const {
 	return TOTALCOLUMNS;
 }
 
-std::size_t utils::csv::CSVReader::getTotalRows() {
+std::size_t utils::csv::CSVReader::getTotalRows() const {
 	return TOTALROWS;
 }
 
-std::string* utils::csv::CSVReader::parserow(const std::string &rowStr) {
+std::string* utils::csv::CSVReader::parserow(const std::string &rowStr) const {
 	std::stringstream holder;
 	std::string* rowArray = new std::string[TOTALCOLUMNS];
 	int index = 0;

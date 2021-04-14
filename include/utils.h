@@ -31,7 +31,7 @@ namespace utils {
             float low;
             float close;
             unsigned int volume;
-            int openInt;
+            unsigned int openInt;
         };
 
     }
@@ -50,14 +50,14 @@ namespace utils {
 			~CSVReader();
 
 			std::string *getrow();
-			std::size_t getTotalColumns();
-			std::size_t getTotalRows();
+			std::size_t getTotalColumns() const;
+			std::size_t getTotalRows() const;
 
 		private:
 			std::size_t TOTALCOLUMNS;
 			std::size_t TOTALROWS;
 			std::ifstream fileReaderStream;
-			std::string *parserow(const std::string &rowStr);
+			std::string *parserow(const std::string &rowStr) const;
 		};
     }
 

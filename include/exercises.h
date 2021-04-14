@@ -4,7 +4,7 @@
 
 namespace partI {
 	void exercise1();
-	utils::stock::StockDayData* loadStockData(const std::string &filePath);
+	utils::stock::StockDayData* loadStockData(utils::csv::CSVReader &reader);
 }
 
 namespace partII {

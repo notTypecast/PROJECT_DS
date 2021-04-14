@@ -13,20 +13,20 @@ void partI::exercise1(const std::string &fileName) {
     // run each algorithm multiple times
     // and get average runtime
 
-    const int totalRuns = 1000;
+    const int totalRuns = 100;
     int totalTime = 0;
 
     // merge sort
     for (int i = 0; i < totalRuns; ++i) {
         std::copy(initialData, initialData + dataSize, dataToSort);
-        totalTime += (int)utils::timer::timeit<std::function<void()>>([dataToSort, dataSize]() {algo::mergeSort(dataToSort, 0, dataSize);});
+        totalTime += (int)utils::timer::timeit<std::function<void()>>([dataToSort, dataSize]() {algo::mergeSort(dataToSort, 0, dataSize - 1);});
     }
     double averageMergeSortTime = ((double)totalTime) / totalRuns;
 
     // quick sort
     for (int i = 0; i < totalRuns; ++i) {
         std::copy(initialData, initialData + dataSize, dataToSort);
-        totalTime += (int)utils::timer::timeit<std::function<void()>>([dataToSort, dataSize]() {algo::quickSort(dataToSort, 0, dataSize);});
+        totalTime += (int)utils::timer::timeit<std::function<void()>>([dataToSort, dataSize]() {algo::quickSort(dataToSort, 0, dataSize - 1);});
     }
 
     double averageQuickSortTime = ((double)totalTime) / totalRuns;

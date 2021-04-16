@@ -29,7 +29,7 @@ namespace algo {
     void quickSort(utils::stock::StockDayData* data, int left, int right);
 
     /// \brief Implementation of the heapsort algorithm.
-    void heapSort(utils::stock::StockDayData* data, std::size_t size);
+    void heapSort(utils::stock::StockDayData** data, std::size_t size);
 
 }
 

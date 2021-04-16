@@ -3,30 +3,28 @@
 #include "utils.h"
 namespace ds {
     //max heap
-    template<typename T>
-    class Heap {
+    class StockHeap {
     public:
-        Heap(std::size_t maxSize);
-        Heap(T** array, std::size_t size, std::size_t maxSize);
-        ~Heap();
-        void insert(T item);
-        T extract(int index);
-        void print();
+        StockHeap(std::size_t maxSize);
+        StockHeap(utils::stock::StockDayData** array, std::size_t size, std::size_t maxSize);
+        ~StockHeap();
+        void insert(utils::stock::StockDayData item);
+        utils::stock::StockDayData extract(int index);
+        int getCurrentSize() const;
+        void print() const;
 
     private:
-        T *internalArray;
+        utils::stock::StockDayData *internalArray;
         const std::size_t maxSize;
         int currentSize;
         bool createdArray;
-        int getParent(int index);
-        int getRightChild(int index);
-        int getLeftChild(int index);
+        int getParent(int index) const;
+        int getRightChild(int index) const;
+        int getLeftChild(int index) const;
 
         void heapifyUp(int index);
         void heapifyDown(int index);
     };
 }
-
-#include "../src/ds/Heap.tpp"
 
 #endif //DS_H

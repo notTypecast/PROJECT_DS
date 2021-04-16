@@ -2,6 +2,7 @@
 #define ALGO_H
 
 #include "utils.h"
+#include "ds.h"
 
 namespace algo {
     /// \brief Merges two sorted subarrays in place.
@@ -26,6 +27,10 @@ namespace algo {
     /// \param left Left index.
     /// \param right Right index.
     void quickSort(utils::stock::StockDayData* data, int left, int right);
+
+    /// \brief Implementation of the heapsort algorithm.
+    void heapSort(utils::stock::StockDayData* data, std::size_t size);
+
 }
 
 #endif //ALGO_H

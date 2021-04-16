@@ -2,6 +2,8 @@
 
 
 void partI::exercise1(const std::string &fileName) {
+    std::cout << "Running for file: " << fileName << std::endl;
+
     // create data reader and get data size
     utils::csv::CSVReader reader(fileName);
     int dataSize =  (int)reader.getTotalRows() - 2;
@@ -22,6 +24,7 @@ void partI::exercise1(const std::string &fileName) {
         totalTime += (int)utils::timer::timeit<std::function<void()>>([dataToSort, dataSize]() {algo::mergeSort(dataToSort, 0, dataSize - 1);});
     }
     double averageMergeSortTime = ((double)totalTime) / totalRuns;
+    std::cout << "Average merge sort time: " << averageMergeSortTime << "us" << std::endl;
 
     // quick sort
     for (int i = 0; i < totalRuns; ++i) {
@@ -31,11 +34,15 @@ void partI::exercise1(const std::string &fileName) {
 
     double averageQuickSortTime = ((double)totalTime) / totalRuns;
 
-    std::cout << "Average merge sort time: " << averageMergeSortTime << "us" << std::endl;
     std::cout << "Average quick sort time: " << averageQuickSortTime << "us" << std::endl;
 
     delete[] initialData;
     delete[] dataToSort;
+
+}
+
+void partI::exercise2(const std::string &fileName) {
+
 
 }
 

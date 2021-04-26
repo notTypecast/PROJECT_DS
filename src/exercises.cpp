@@ -16,7 +16,7 @@ utils::stock::StockDayData* partI::loadStockData(utils::csv::CSVReader &reader) 
                          std::stof(currLine[2]),
                          std::stof(currLine[3]),
                          std::stof(currLine[4]),
-                         (unsigned)std::stoi(currLine[5]),
+                         std::stoi(currLine[5]),
                          (unsigned)std::stoi(currLine[6])};
 
         delete[] currLine;
@@ -112,4 +112,48 @@ void partI::exercise2(const std::string &fileName) {
 
     delete[] initialData;
     delete[] dataToSort;
+}
+
+void partI::exercise3() {
+    std::string inputDate;
+
+    while (true) {
+        std::cout << "Input date (YYYY-MM-DD): ";
+        std::getline(std::cin, inputDate);
+
+        if (std::regex_match(inputDate, std::regex(utils::regex::DATE))) {
+            break;
+        }
+
+        std::cout << "Expected a valid date." << std::endl;
+    }
+
+    utils::csv::CSVReader reader("../data/agn.us.txt");
+    int dataSize =  (int)reader.getTotalRows() - 2;
+    utils::stock::StockDayData* initialData = partI::loadStockData(reader);
+
+    // dataset is sorted by dates (ascending) so we can perform binary search on array
+    const int totalRuns = 1000;
+    int totalTime = 0;
+
+    //binary search
+    for (int i = 0; i < totalRuns; ++i) {
+        totalTime += (int)utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {algo::binarySearch(initialData, 0, dataSize - 1, inputDate);});
+    }
+
+    double averageBinarySearchTime = ((double)totalTime) / totalRuns;
+
+    std::cout << "Average binary search time: " << averageBinarySearchTime << "us" << std::endl;
+
+    totalTime = 0;
+
+    //interpolation search
+    for (int i = 0; i < totalRuns; ++i) {
+        totalTime += (int)utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {algo::interpolationSearch(initialData, 0, dataSize - 1, inputDate);});
+    }
+
+    double averageInterpolationSearchTime = ((double)totalTime) / totalRuns;
+
+    std::cout << "Average interpolation search time: " << averageInterpolationSearchTime << "us" << std::endl;
+
 }

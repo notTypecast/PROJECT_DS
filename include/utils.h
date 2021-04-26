@@ -1,5 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
+
 #include <cstdio>
 #include <string>
 #include <ctime>
@@ -13,15 +14,15 @@
 
 namespace utils {
 
-    template <typename T>
+    template<typename T>
     void swap(T &item1, T &item2);
 
     namespace array {
-        template <typename T>
+        template<typename T>
         bool compare(const T arr1[], std::size_t arr1Size, const T arr2[], std::size_t arr2Size);
 
-        template <typename T>
-        T* duplicate(const T arr[], std::size_t arrSize);
+        template<typename T>
+        T *duplicate(const T arr[], std::size_t arrSize);
     }
 
     namespace stock {
@@ -31,7 +32,7 @@ namespace utils {
             float high;
             float low;
             float close;
-            unsigned int volume;
+            int volume;
             unsigned int openInt;
         };
 
@@ -39,30 +40,49 @@ namespace utils {
 
     }
 
+
+    namespace date {
+        const int YEARTOSECONDS = 31536000; // not taking leap years into account
+        const int DAYTOSECONDS = 86400;
+
+        std::time_t convertStringToTimestamp(const std::string &dateStr);
+
+        std::string convertTimestampToString(std::time_t dateTimestamp);
+    }
+
+
     namespace csv {
-		class CSVReader {
-		public:
-			CSVReader(const std::string &filePath);
-			~CSVReader();
+        class CSVReader {
+        public:
+            CSVReader(const std::string &filePath);
 
-			std::string *getrow();
-			std::size_t getTotalColumns() const;
-			std::size_t getTotalRows() const;
+            ~CSVReader();
 
-		private:
-			std::size_t TOTALCOLUMNS;
-			std::size_t TOTALROWS;
-			std::ifstream fileReaderStream;
-			std::string *parserow(const std::string &rowStr) const;
-		};
+            std::string *getrow();
+
+            std::size_t getTotalColumns() const;
+
+            std::size_t getTotalRows() const;
+
+        private:
+            std::size_t TOTALCOLUMNS;
+            std::size_t TOTALROWS;
+            std::ifstream fileReaderStream;
+
+            std::string *parserow(const std::string &rowStr) const;
+        };
     }
 
     namespace timer {
         /// \brief Times execution of a function.
         /// \param funcToTime Function to time.
         /// \returns Time in microseconds.
-        template <typename F>
+        template<typename F>
         std::time_t timeit(F funcToTime);
+    }
+
+    namespace regex {
+        const std::string DATE = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$";
     }
 
 }

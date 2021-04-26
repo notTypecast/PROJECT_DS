@@ -37,8 +37,19 @@ namespace algo {
     /// \brief Implementation of the counting sort algorithm.
     /// \param data Pointer to array of StockDayData structs.
     /// \param size Size of array.
-    /// \returns
+    /// \returns 1-based sorted array of (size+1).
     utils::stock::StockDayData* countingSort(utils::stock::StockDayData* data, std::size_t size);
+
+    /// \brief Implementation of the binary search algorithm.
+    /// \param data Pointer to array of StockDayData structs.
+    /// \param left Left index in array.
+    /// \param right Right index in array.
+    /// \param date Date to search for.
+    int binarySearch(utils::stock::StockDayData* data, int left, int right, const std::string &date);
+
+    int interpolationSearch(utils::stock::StockDayData* data, int left, int right, const std::string &date);
+
+
 
 }
 

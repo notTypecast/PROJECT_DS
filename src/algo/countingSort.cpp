@@ -30,10 +30,11 @@ utils::stock::StockDayData* algo::countingSort(utils::stock::StockDayData *data,
         if (count[newCloseVal] == 0) {
             std::cout << "test: " << data[i].close << std::endl;
         }
+        // this causes problems if output array size is not size+1
         output[count[newCloseVal]] = data[i];
         --count[newCloseVal];
     }
-    
+
     delete[] count;
     return output;
 }

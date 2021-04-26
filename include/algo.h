@@ -1,6 +1,7 @@
 #ifndef ALGO_H
 #define ALGO_H
 
+#include <cmath>
 #include "utils.h"
 #include "ds.h"
 
@@ -29,7 +30,15 @@ namespace algo {
     void quickSort(utils::stock::StockDayData* data, int left, int right);
 
     /// \brief Implementation of the heapsort algorithm.
+    /// \param data Pointer to array of StockDayData structs.
+    /// \param size Size of array.
     void heapSort(utils::stock::StockDayData** data, std::size_t size);
+
+    /// \brief Implementation of the counting sort algorithm.
+    /// \param data Pointer to array of StockDayData structs.
+    /// \param size Size of array.
+    /// \returns
+    utils::stock::StockDayData* countingSort(utils::stock::StockDayData* data, std::size_t size);
 
 }
 

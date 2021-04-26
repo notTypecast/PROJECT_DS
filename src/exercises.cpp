@@ -51,6 +51,8 @@ void partI::exercise1(const std::string &fileName) {
     double averageMergeSortTime = ((double)totalTime) / totalRuns;
     std::cout << "Average merge sort time: " << averageMergeSortTime << "us" << std::endl;
 
+    totalTime = 0;
+
     // quick sort
     for (int i = 0; i < totalRuns; ++i) {
         std::copy(initialData, initialData + dataSize, dataToSort);
@@ -92,6 +94,21 @@ void partI::exercise2(const std::string &fileName) {
     double averageHeapSortTime = ((double)totalTime) / totalRuns;
 
     std::cout << "Average heap sort time: " << averageHeapSortTime << "us" << std::endl;
+
+    std::copy(initialData, initialData + dataSize, dataToSort);
+    totalTime = 0;
+
+    //counting sort
+    for (int i = 0; i < totalRuns; ++i) {
+        totalTime += (int)utils::timer::timeit<std::function<void()>>([dataToSort, dataSize]() {
+            utils::stock::StockDayData *output = algo::countingSort(dataToSort, dataSize);
+            delete[] output;
+        });
+    }
+
+    double averageCountingSortTime = ((double)totalTime) / totalRuns;
+
+    std::cout << "Average counting sort time: " << averageCountingSortTime << "us" << std::endl;
 
     delete[] initialData;
     delete[] dataToSort;

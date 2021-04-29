@@ -3,8 +3,8 @@
 std::time_t utils::date::convertStringToTimestamp(const std::string &dateStr) {
 
     // Date format: YYYY-MM-DD
-    int firstDash = dateStr.find('-');
-    int secondDash = dateStr.find('-', firstDash + 1);
+    int firstDash = (int)dateStr.find('-');
+    int secondDash = (int)dateStr.find('-', firstDash + 1);
 
     int year = stoi(dateStr.substr(0, firstDash));
     int month = stoi(dateStr.substr(firstDash + 1, secondDash - firstDash - 1));

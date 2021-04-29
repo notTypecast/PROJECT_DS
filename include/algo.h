@@ -30,7 +30,7 @@ namespace algo {
     void quickSort(utils::stock::StockDayData* data, int left, int right);
 
     /// \brief Implementation of the heapsort algorithm.
-    /// \param data Pointer to array of StockDayData structs.
+    /// \param data Double pointer to array of StockDayData structs; function changes pointer to array, so double pointer is required.
     /// \param size Size of array.
     void heapSort(utils::stock::StockDayData** data, std::size_t size);
 
@@ -47,7 +47,15 @@ namespace algo {
     /// \param date Date to search for.
     int binarySearch(utils::stock::StockDayData* data, int left, int right, const std::string &date);
 
+    /// \brief Implementation of the interpolation search algorithm.
+    /// \param data Pointer to array of StockDayData structs.
+    /// \param left Left index in array.
+    /// \param right Right index in array.
+    /// \param date Date to search for.
     int interpolationSearch(utils::stock::StockDayData* data, int left, int right, const std::string &date);
+
+    int binaryInterpolationSearch(utils::stock::StockDayData* data, std::size_t dataSize, const std::string &date);
+
 
 
 

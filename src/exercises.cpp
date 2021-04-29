@@ -157,3 +157,25 @@ void partI::exercise3() {
     std::cout << "Average interpolation search time: " << averageInterpolationSearchTime << "us" << std::endl;
 
 }
+
+void partI::exercise4() {
+    std::string inputDate;
+
+    while (true) {
+        std::cout << "Input date (YYYY-MM-DD): ";
+        std::getline(std::cin, inputDate);
+
+        if (std::regex_match(inputDate, std::regex(utils::regex::DATE))) {
+            break;
+        }
+
+        std::cout << "Expected a valid date." << std::endl;
+    }
+
+    utils::csv::CSVReader reader("../data/agn.us.txt");
+    int dataSize =  (int)reader.getTotalRows() - 2;
+    utils::stock::StockDayData* initialData = partI::loadStockData(reader);
+
+    int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
+    std::cout << volume << std::endl;
+}

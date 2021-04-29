@@ -10,6 +10,7 @@ namespace partI {
 	void exercise1(const std::string &fileName);
 	void exercise2(const std::string &fileName);
 	void exercise3();
+	void exercise4();
 
 }
 

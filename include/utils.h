@@ -48,6 +48,8 @@ namespace utils {
         std::time_t convertStringToTimestamp(const std::string &dateStr);
 
         std::string convertTimestampToString(std::time_t dateTimestamp);
+
+        int convertStringToDays(const std::string &dateStr);
     }
 
 

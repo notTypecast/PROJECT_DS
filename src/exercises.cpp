@@ -176,6 +176,14 @@ void partI::exercise4() {
     int dataSize =  (int)reader.getTotalRows() - 2;
     utils::stock::StockDayData* initialData = partI::loadStockData(reader);
 
+    for (int i = 0; i < dataSize; ++i) {
+        if (algo::binaryInterpolationSearch(initialData, dataSize, initialData[i].date) != initialData[i].volume) {
+            std::cout << "Problem with " << initialData[i].date << std::endl;
+        }
+    }
+
+
+    /*
     int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
-    std::cout << volume << std::endl;
+    std::cout << volume << std::endl;*/
 }

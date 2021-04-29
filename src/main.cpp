@@ -20,7 +20,8 @@ int main() {
     partI::exercise3();
      */
 
-    //partI::exercise4();
+    partI::exercise4();
+
 
     return 0;
 }

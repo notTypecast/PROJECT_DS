@@ -60,3 +60,9 @@ std::string utils::date::convertTimestampToString(std::time_t dateTimestamp) {
     return ss.str();
 
 }
+
+int utils::date::convertStringToDays(const std::string &dateStr) {
+    std::time_t seconds = utils::date::convertStringToTimestamp(dateStr);
+    return (int)(seconds / utils::date::DAYTOSECONDS);
+
+}

@@ -1,30 +1,19 @@
 #include "../../include/algo.h"
 #define STD utils::date::convertStringToDays
 
-int algo::binaryInterpolationSearch(utils::stock::StockDayData *data, std::size_t dataSize, const std::string &date) {
+int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, const std::string &date) {
     if (date < data[0].date || date > data[dataSize - 1].date) {
         return -1;
     }
+
+    int dateTimestamp = STD(date);
     int left = 0;
     int right = (int)(dataSize - 1);
-    //Instead of unix timestamps, dates were converted to total days elapsed since 1970-01-01
-    int dateTimestamp = STD(date);
-    //long double conversion is used to increase floating point precision
-    //without it, if dateTimestamp and data[left].date are very close but not equal, the division will result in 0 because of not enough precision to store result
-    //and next = ceil(0) = 0, whereas it should be next = 1 unless dateTimestamp == data[left].date
-    int next = (int)(std::ceil((long double)(dataSize - 1) * (dateTimestamp - STD(data[left].date)) / (STD(data[right].date) - STD(data[left].date))));
+    int next = std::ceil((long double)(dataSize - 1) * (dateTimestamp - STD(data[left].date)) / (STD(data[right].date) - STD(data[left].date)));
     int size = (int)dataSize;
 
-    while (date != data[next].date) {
+    while (date != data[next].date && left < right) {
         int i = 0;
-        if (size <= 3) {
-            for (i = 0; i < size; ++i) {
-                if (data[left + i].date == date) {
-                    return data[left + i].volume;
-                }
-            }
-            return -1;
-        }
         double sizeSqrt = std::sqrt(size);
         int currentDataIndex;
         if (date >= data[next].date) {
@@ -34,14 +23,15 @@ int algo::binaryInterpolationSearch(utils::stock::StockDayData *data, std::size_
                     break;
                 }
                 if (date > data[currentDataIndex].date) {
-                    ++i;
+                    i = !i ? 1 : i *= 2;
                 }
                 else {
                     break;
                 }
             }
+            // located the range using exponential steps
             right = (int)(next + i*sizeSqrt);
-            left = (int)(next + (i - 1)*sizeSqrt);
+            left = (int)(next + (i/2)*sizeSqrt);
         }
         else {
             while (true) {
@@ -50,13 +40,13 @@ int algo::binaryInterpolationSearch(utils::stock::StockDayData *data, std::size_
                     break;
                 }
                 if (date < data[currentDataIndex].date) {
-                    ++i;
+                    i = !i ? 1 : i *= 2;
                 }
                 else {
                     break;
                 }
             }
-            right = (int)(next - (i - 1)*sizeSqrt);
+            right = (int)(next - (i/2)*sizeSqrt);
             left = (int)(next - i*sizeSqrt);
         }
         if (right >= dataSize) {
@@ -65,6 +55,26 @@ int algo::binaryInterpolationSearch(utils::stock::StockDayData *data, std::size_
         if (left < 0) {
             left = 0;
         }
+
+        while (true) {
+            int middle = (int)((right + left) / 2);
+
+            if (date == data[middle].date) {
+                return data[middle].volume;
+            }
+
+            if (middle + sizeSqrt >= right || middle - sizeSqrt <= left) {
+                break;
+            }
+
+            if (date < data[middle].date) {
+                right = (int)(middle - sizeSqrt);
+            }
+            else {
+                left = (int)(middle + sizeSqrt);
+            }
+        }
+
         size = right - left + 1;
         next = (int)(left + std::floor((long double)size * (dateTimestamp - STD(data[left].date)) / (STD(data[right].date) - STD(data[left].date))) - 1);
     }

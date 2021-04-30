@@ -176,14 +176,30 @@ void partI::exercise4() {
     int dataSize =  (int)reader.getTotalRows() - 2;
     utils::stock::StockDayData* initialData = partI::loadStockData(reader);
 
-    for (int i = 0; i < dataSize; ++i) {
-        if (algo::binaryInterpolationSearch(initialData, dataSize, initialData[i].date) != initialData[i].volume) {
-            std::cout << "Problem with " << initialData[i].date << std::endl;
-        }
+    // dataset is sorted by dates (ascending) so we can perform binary search on array
+    const int totalRuns = 1000;
+    int totalTime = 0;
+
+    //binary interpolation search
+    for (int i = 0; i < totalRuns; ++i) {
+        totalTime += (int)utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {algo::binaryInterpolationSearch(initialData, dataSize, inputDate);});
     }
 
+    double averageBinaryInterpolationSearchTime = ((double)totalTime) / totalRuns;
 
-    /*
+    std::cout << "Average binary interpolation search time: " << averageBinaryInterpolationSearchTime << "us" << std::endl;
+
+    totalTime = 0;
+
+    //interpolation search
+    for (int i = 0; i < totalRuns; ++i) {
+        totalTime += (int)utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {algo::improvedBIS(initialData, dataSize, inputDate);});
+    }
+
+    double averageImprovedBISTime = ((double)totalTime) / totalRuns;
+
+    std::cout << "Average binary interpolation search time with improved worst time complexity: " << averageImprovedBISTime << "us" << std::endl;
+
     int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
-    std::cout << volume << std::endl;*/
+    std::cout << "Total volume for given date: " << volume << std::endl;
 }

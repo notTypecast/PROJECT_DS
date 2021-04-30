@@ -45,6 +45,7 @@ namespace algo {
     /// \param left Left index in array.
     /// \param right Right index in array.
     /// \param date Date to search for.
+    /// \returns total volume corresponding to given date, -1 if not found.
     int binarySearch(utils::stock::StockDayData* data, int left, int right, const std::string &date);
 
     /// \brief Implementation of the interpolation search algorithm.
@@ -52,9 +53,22 @@ namespace algo {
     /// \param left Left index in array.
     /// \param right Right index in array.
     /// \param date Date to search for.
+    /// \returns total volume corresponding to given date, -1 if not found.
     int interpolationSearch(utils::stock::StockDayData* data, int left, int right, const std::string &date);
 
+    /// \brief Implementation of the BIS algorithm.
+    /// \param data Pointer to array of StockDayData structs.
+    /// \param dataSize Size of array.
+    /// \param date Date to search for.
+    /// \returns total volume corresponding to given date, -1 if not found.
     int binaryInterpolationSearch(utils::stock::StockDayData* data, std::size_t dataSize, const std::string &date);
+
+    /// \brief Implementation of the BIS algorithm, with improved worst case complexity.
+    /// \param data Pointer to array of StockDayData structs.
+    /// \param dataSize Size of array.
+    /// \param date Date to search for.
+    /// \returns total volume corresponding to given date, -1 if not found.
+    int improvedBIS(utils::stock::StockDayData* data, std::size_t dataSize, const std::string &date);
 
 
 

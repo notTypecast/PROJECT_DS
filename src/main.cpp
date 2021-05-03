@@ -18,10 +18,8 @@ int main() {
     partI::exercise2("../data/ale.us.txt");
     newline
     partI::exercise3();
+     partI::exercise4();
      */
-
-    partI::exercise4();
-
 
     return 0;
 }

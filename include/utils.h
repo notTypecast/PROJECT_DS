@@ -14,9 +14,11 @@
 
 namespace utils {
 
+    // Simple swap helper function.
     template<typename T>
     void swap(T &item1, T &item2);
 
+    // Helper functions to deal with arrays.
     namespace array {
         template<typename T>
         bool compare(const T arr1[], std::size_t arr1Size, const T arr2[], std::size_t arr2Size);
@@ -26,6 +28,7 @@ namespace utils {
     }
 
     namespace stock {
+        // This struct is used to hold stock data for a single day.
         struct StockDayData {
             std::string date;
             float open;
@@ -45,25 +48,30 @@ namespace utils {
         const int YEARTOSECONDS = 31536000; // not taking leap years into account
         const int DAYTOSECONDS = 86400;
 
+        /// \brief Converts given string to UNIX timestamp.
         std::time_t convertStringToTimestamp(const std::string &dateStr);
 
-        std::string convertTimestampToString(std::time_t dateTimestamp);
-
+        /// \brief Converts UNIX timestamp to number of days.
         int convertStringToDays(const std::string &dateStr);
     }
 
 
     namespace csv {
+        /// \brief Wrapper class to handle csv parsing.
         class CSVReader {
         public:
             CSVReader(const std::string &filePath);
 
             ~CSVReader();
 
+            /// \returns Single row as array of strings, each element corresponds to a row value
+            /// \details Size of returned array will be TOTALCOLUMNS, since each element of the array
+            /// is a csv value.
             std::string *getrow();
 
             std::size_t getTotalColumns() const;
 
+            /// \returns Total number of rows in CSV file. Includes column row and empty lines.
             std::size_t getTotalRows() const;
 
         private:
@@ -71,6 +79,8 @@ namespace utils {
             std::size_t TOTALROWS;
             std::ifstream fileReaderStream;
 
+            /// \brief Splits row on commas.
+            /// \returns Array of strings
             std::string *parserow(const std::string &rowStr) const;
         };
     }
@@ -79,16 +89,21 @@ namespace utils {
         /// \brief Times execution of a function.
         /// \param funcToTime Function to time.
         /// \returns Time in microseconds.
+        /// \details This function is mainly used to assess sorting and search algorithms.
         template<typename F>
         std::time_t timeit(F funcToTime);
     }
 
     namespace regex {
+        // pattern to match the YYYY-MM-DD format.
         const std::string DATE = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$";
     }
 
 }
 
+// including tpp files, since non-specialized template implementations
+// need to be in the same file as their declarations.
+// using .tpp extension to distinguish source files containing template implementations.
 #include "../src/utils/array.tpp"
 #include "../src/utils/utils.tpp"
 #include "../src/utils/timer.tpp"

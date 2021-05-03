@@ -23,6 +23,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
                     break;
                 }
                 if (date > data[currentDataIndex].date) {
+                    // adjusting step size by multiplying by 2 every time. This ensures exponential steps.
                     i = !i ? 1 : i *= 2;
                 }
                 else {
@@ -40,6 +41,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
                     break;
                 }
                 if (date < data[currentDataIndex].date) {
+                    // exponential steps
                     i = !i ? 1 : i *= 2;
                 }
                 else {
@@ -49,6 +51,8 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
             right = (int)(next - (i/2)*sizeSqrt);
             left = (int)(next - i*sizeSqrt);
         }
+        // if new right and left positions exceed bounds, setting them
+        // equal to last and first index respectively.
         if (right >= dataSize) {
             right = (int)(dataSize - 1);
         }
@@ -56,6 +60,18 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
             left = 0;
         }
 
+        /*
+         * By now, we have an approximate position of the desired element between the
+         * exponential steps. To locate the element, we perform a modified version of binary search among
+         * the elements whose indices are multiples of sqrt(size).
+         * If one of these elements is the element we're looking for, the search is over and the corresponding volume
+         * is returned.
+         * If that's not the case, this modified version will locate the subarray of size sqrt(size) and
+         * adjust left and right positions accordingly. This will define the bounds of the subarray which will be
+         * searched during the next iteration of the outer while loop.
+         *
+         * This could be done with a simple linear search, but a binary search is more efficient.
+         */
         while (true) {
             int middle = (int)((right + left) / 2);
 

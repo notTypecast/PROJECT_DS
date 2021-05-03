@@ -1,4 +1,7 @@
-template <typename T>
+/* Swaps two elements in memory
+ * Elements are passed as references
+ */
+template<typename T>
 void utils::swap(T &item1, T &item2) {
     T tmp = item1;
     item1 = item2;

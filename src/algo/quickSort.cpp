@@ -1,10 +1,12 @@
 #include "../../include/algo.h"
 
 int algo::partition(utils::stock::StockDayData* data, int left, int right) {
+    // using the right-most element as pivot
     utils::stock::StockDayData pivot = data[right];
     int index = left - 1;
 
     for (int j = left; j < right; ++j) {
+        // if open values are equal, dates are checked to ensure the sorting is stable
         if (data[j].open < pivot.open || (data[j].open == pivot.open && data[j].date < pivot.date)) {
             utils::swap<utils::stock::StockDayData>(data[++index], data[j]);
         }

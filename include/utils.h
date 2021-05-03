@@ -39,7 +39,7 @@ namespace utils {
             unsigned int openInt;
         };
 
-        void printStockStruct(StockDayData data);
+        void printStockStruct(const StockDayData &data);
 
     }
 
@@ -89,7 +89,6 @@ namespace utils {
         /// \brief Times execution of a function.
         /// \param funcToTime Function to time.
         /// \returns Time in microseconds.
-        /// \details This function is mainly used to assess sorting and search algorithms.
         template<typename F>
         std::time_t timeit(F funcToTime);
     }

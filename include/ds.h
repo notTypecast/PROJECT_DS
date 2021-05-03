@@ -39,11 +39,11 @@ namespace ds {
         bool createdArray;
 
         // Helper methods to get indices of nodes relative to given index.
-        int getParent(int index) const;
+        static int getParent(int index);
 
-        int getRightChild(int index) const;
+        static int getRightChild(int index);
 
-        int getLeftChild(int index) const;
+        static int getLeftChild(int index);
 
         // Methods used to preserve the heap structure.
         void heapifyUp(int index);

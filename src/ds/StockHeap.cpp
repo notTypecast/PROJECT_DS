@@ -4,8 +4,7 @@
 // this is because HeapSort sorts by close value
 
 // Constructor 1
-ds::StockHeap::StockHeap(std::size_t maxSize) : createdArray(true), internalArray(new utils::stock::StockDayData[maxSize]), currentSize(0), maxSize(maxSize) {
-};
+ds::StockHeap::StockHeap(std::size_t maxSize) : createdArray(true), internalArray(new utils::stock::StockDayData[maxSize]), currentSize(0), maxSize(maxSize) {};
 
 // Constructor 2
 ds::StockHeap::StockHeap(utils::stock::StockDayData** array, std::size_t size, std::size_t maxSize) : createdArray(false), internalArray(new utils::stock::StockDayData[maxSize]), currentSize(0), maxSize(maxSize) {
@@ -35,17 +34,17 @@ ds::StockHeap::~StockHeap() {
 }
 
 // Returns index of parent of element at passed index
-int ds::StockHeap::getParent(int index) const {
+int ds::StockHeap::getParent(int index) {
     return (index - 1) / 2;
 }
 
 // Returns index of right child of element at passed index
-int ds::StockHeap::getRightChild(int index) const {
+int ds::StockHeap::getRightChild(int index) {
     return 2*index + 2;
 }
 
 // Returns index of left child of element at passed index
-int ds::StockHeap::getLeftChild(int index) const {
+int ds::StockHeap::getLeftChild(int index) {
     return 2*index + 1;
 }
 

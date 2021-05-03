@@ -24,7 +24,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
                 }
                 if (date > data[currentDataIndex].date) {
                     // adjusting step size by multiplying by 2 every time. This ensures exponential steps.
-                    i = !i ? 1 : i *= 2;
+                    i = !i ? 1 : i * 2;
                 }
                 else {
                     break;
@@ -32,7 +32,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
             }
             // located the range using exponential steps
             right = (int)(next + i*sizeSqrt);
-            left = (int)(next + (i/2)*sizeSqrt);
+            left = (int)(next + ((double)i/2)*sizeSqrt);
         }
         else {
             while (true) {
@@ -42,13 +42,13 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
                 }
                 if (date < data[currentDataIndex].date) {
                     // exponential steps
-                    i = !i ? 1 : i *= 2;
+                    i = !i ? 1 : i * 2;
                 }
                 else {
                     break;
                 }
             }
-            right = (int)(next - (i/2)*sizeSqrt);
+            right = (int)(next - ((double)i/2)*sizeSqrt);
             left = (int)(next - i*sizeSqrt);
         }
         // if new right and left positions exceed bounds, setting them

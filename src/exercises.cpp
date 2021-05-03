@@ -188,6 +188,7 @@ void partI::exercise3() {
 
 // Exercise 4 is the same as exercise 3, but it runs BIS and improved worst-case BIS instead
 void partI::exercise4() {
+    /*
     std::string inputDate;
 
     while (true) {
@@ -199,12 +200,19 @@ void partI::exercise4() {
         }
 
         std::cout << "Expected a valid date." << std::endl;
-    }
+    }*/
 
     utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
 
+    for (int i = 0; i < dataSize; ++i) {
+        if (algo::improvedBIS(initialData, dataSize, initialData[i].date) != initialData[i].volume) {
+            std::cout << "Problem with: " << initialData[i].date << std::endl;
+        }
+    }
+
+    /*
     const int totalRuns = 1000;
     int totalTime = 0;
 
@@ -235,4 +243,5 @@ void partI::exercise4() {
 
     int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
     std::cout << "Total volume for given date: " << volume << std::endl;
+     */
 }

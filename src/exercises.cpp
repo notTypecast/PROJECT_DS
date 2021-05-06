@@ -192,6 +192,7 @@ void partI::exercise3() {
 
 // Exercise 4 is the same as exercise 3, but it runs BIS and improved worst-case BIS instead
 void partI::exercise4() {
+    /*
     std::string inputDate;
 
     while (true) {
@@ -203,40 +204,69 @@ void partI::exercise4() {
         }
 
         std::cout << "Expected a valid date." << std::endl;
-    }
+    }*/
 
     utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
 
-    const int totalRuns = 1000;
-    int totalTime = 0;
+    typedef struct {
+        utils::stock::StockDayData stockStruct;
+        double currentWorstTime;
+    } test;
 
-    // binary interpolation search
-    for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
-            algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
-        });
+    test BIS;
+    BIS.currentWorstTime = 0;
+    test improvedBIS;
+    improvedBIS.currentWorstTime = 0;
+
+    for (int j = 0; j < dataSize; ++j) {
+        std::string inputDate = initialData[j].date;
+
+        const int totalRuns = 1000;
+        int totalTime = 0;
+
+        // binary interpolation search
+        for (int i = 0; i < totalRuns; ++i) {
+            totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
+                algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
+            });
+        }
+
+        double averageBinaryInterpolationSearchTime = ((double) totalTime) / totalRuns;
+        if (averageBinaryInterpolationSearchTime > BIS.currentWorstTime) {
+            BIS.currentWorstTime = averageBinaryInterpolationSearchTime;
+            BIS.stockStruct = initialData[j];
+        }
+
+        totalTime = 0;
+
+        // improved BIS
+        for (int i = 0; i < totalRuns; ++i) {
+            totalTime += (int) utils::timer::timeit<std::function<void()>>(
+                    [initialData, dataSize, inputDate]() { algo::improvedBIS(initialData, dataSize, inputDate); });
+        }
+
+        double averageImprovedBISTime = ((double) totalTime) / totalRuns;
+        if (averageImprovedBISTime > improvedBIS.currentWorstTime) {
+            improvedBIS.currentWorstTime = averageImprovedBISTime;
+            improvedBIS.stockStruct = initialData[j];
+        }
     }
 
-    double averageBinaryInterpolationSearchTime = ((double) totalTime) / totalRuns;
+    std::cout << "BIS" << std::endl;
+    std::cout << "Worst time: " << BIS.currentWorstTime << std::endl;
+    std::cout << "For struct: ";
+    utils::stock::printStockStruct(BIS.stockStruct);
+    std::cout << std::endl;
 
-    std::cout << "Average binary interpolation search time: " << averageBinaryInterpolationSearchTime << "us"
-              << std::endl;
+    std::cout << "Improved BIS" << std::endl;
+    std::cout << "Worst time: " << improvedBIS.currentWorstTime << std::endl;
+    std::cout << "For struct: ";
+    utils::stock::printStockStruct(improvedBIS.stockStruct);
 
-    totalTime = 0;
-
-    // improved BIS
-    for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>(
-                [initialData, dataSize, inputDate]() { algo::improvedBIS(initialData, dataSize, inputDate); });
-    }
-
-    double averageImprovedBISTime = ((double) totalTime) / totalRuns;
-
-    std::cout << "Average binary interpolation search time with improved worst time complexity: "
-              << averageImprovedBISTime << "us" << std::endl;
-
+    /*
     int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
-    std::cout << "Total volume for given date: " << volume << std::endl;
+    std::cout << "Total volume for given date: " << volume << std::endl;*/
+
 }

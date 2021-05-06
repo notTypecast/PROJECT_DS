@@ -14,6 +14,18 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
 
     while (date != data[next].date && left < right) {
         int i = 0;
+        //linear search if range contains 3 elements or less
+        if (size <= 3) {
+            //try to find element in range
+            for (i = 0; i < size; ++i) {
+                if (data[left + i].date == date) {
+                    //return element volume if found
+                    return data[left + i].volume;
+                }
+            }
+            //element not found, exit
+            return -1;
+        }
         double sizeSqrt = std::sqrt(size);
         int currentDataIndex;
         if (date >= data[next].date) {

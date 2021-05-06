@@ -143,7 +143,7 @@ void partI::exercise2(const std::string &fileName) {
  */
 void partI::exercise3() {
     // get input date from user
-    std::string inputDate;
+    /*std::string inputDate;
     while (true) {
         std::cout << "Input date (YYYY-MM-DD): ";
         std::getline(std::cin, inputDate);
@@ -154,39 +154,48 @@ void partI::exercise3() {
         }
 
         std::cout << "Expected a valid date." << std::endl;
-    }
+    }*/
 
     // read required data from file
     utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
 
-    // timing and getting average runtime works the same as it did with exercises 1 and 2
-    const int totalRuns = 1000;
-    int totalTime = 0;
+    double totalAverageTimeBINARY = 0;
+    double totalAverageTimeINTER = 0;
 
-    //binary search
-    for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>(
-                [initialData, dataSize, inputDate]() { algo::binarySearch(initialData, 0, dataSize - 1, inputDate); });
+    for (int j = 0; j < dataSize; ++j) {
+        std::string inputDate = initialData[j].date;
+        // timing and getting average runtime works the same as it did with exercises 1 and 2
+        const int totalRuns = 1000;
+        int totalTime = 0;
+
+        //binary search
+        for (int i = 0; i < totalRuns; ++i) {
+            totalTime += (int) utils::timer::timeit<std::function<void()>>(
+                    [initialData, dataSize, inputDate]() {
+                        algo::binarySearch(initialData, 0, dataSize - 1, inputDate);
+                    });
+        }
+
+        double averageBinarySearchTime = ((double) totalTime) / totalRuns;
+        totalAverageTimeBINARY += averageBinarySearchTime;
+
+        totalTime = 0;
+
+        //interpolation search
+        for (int i = 0; i < totalRuns; ++i) {
+            totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
+                algo::interpolationSearch(initialData, 0, dataSize - 1, inputDate);
+            });
+        }
+
+        double averageInterpolationSearchTime = ((double) totalTime) / totalRuns;
+        totalAverageTimeINTER += averageInterpolationSearchTime;
     }
 
-    double averageBinarySearchTime = ((double) totalTime) / totalRuns;
-
-    std::cout << "Average binary search time: " << averageBinarySearchTime << "us" << std::endl;
-
-    totalTime = 0;
-
-    //interpolation search
-    for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
-            algo::interpolationSearch(initialData, 0, dataSize - 1, inputDate);
-        });
-    }
-
-    double averageInterpolationSearchTime = ((double) totalTime) / totalRuns;
-
-    std::cout << "Average interpolation search time: " << averageInterpolationSearchTime << "us" << std::endl;
+    std::cout << "Binary search: " << totalAverageTimeBINARY / dataSize << "us" << std::endl;
+    std::cout << "Interpolation search: " << totalAverageTimeINTER / dataSize << "us" << std::endl;
 
 }
 
@@ -220,10 +229,11 @@ void partI::exercise4() {
     test improvedBIS;
     improvedBIS.currentWorstTime = 0;
 
-    for (int j = 0; j < dataSize; ++j) {
+    for (int j = 0; j < (int)dataSize/10; ++j) {
+        std::cout << "Running for: " << initialData[j].date << std::endl;
         std::string inputDate = initialData[j].date;
 
-        const int totalRuns = 1000;
+        const int totalRuns = 100000;
         int totalTime = 0;
 
         // binary interpolation search
@@ -264,6 +274,7 @@ void partI::exercise4() {
     std::cout << "Worst time: " << improvedBIS.currentWorstTime << std::endl;
     std::cout << "For struct: ";
     utils::stock::printStockStruct(improvedBIS.stockStruct);
+    std::cout << std::endl;
 
     /*
     int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);

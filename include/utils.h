@@ -39,6 +39,22 @@ namespace utils {
             unsigned int openInt;
         };
 
+        // This struct only holds date and volume for stock.
+        struct StockDayVolume {
+            std::string date;
+            int volume;
+            inline bool operator< (const StockDayVolume& other) const {return date < other.date;}
+            inline bool operator<= (const StockDayVolume& other) const {return date <= other.date;};
+            inline bool operator> (const StockDayVolume& other) const {return date > other.date;}
+            inline bool operator>= (const StockDayVolume& other) const {return date >= other.date;}
+            inline bool operator== (const StockDayVolume& other) const {return date == other.date;}
+            inline bool operator!= (const StockDayVolume& other) const {return date != other.date;}
+            inline friend std::ostream & operator<< (std::ostream &out, struct StockDayVolume s) {
+                out << s.date << " " << s.volume;
+                return out;
+            }
+        };
+
         void printStockStruct(const StockDayData &data);
 
     }

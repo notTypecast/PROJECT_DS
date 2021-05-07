@@ -50,6 +50,36 @@ namespace ds {
 
         void heapifyDown(int index);
     };
+
+    template <typename T>
+    struct AVLNode {
+        T key;
+        AVLNode* left;
+        AVLNode* right;
+        int height;
+    };
+
+    template <typename T>
+    struct AVLNode<T>* createAVLNode(T key);
+
+    template <typename T>
+    class AVLTree {
+    public:
+        AVLTree();
+        ~AVLTree();
+        void insert(T key);
+        void printInOrder();
+        struct AVLNode<T> *root;
+    private:
+        void printInOrderRecursively(ds::AVLNode<T>* currentNode);
+        int getNodeHeight(ds::AVLNode<T>* node);
+        int getNodeBalanceFactor(ds::AVLNode<T>* node);
+        AVLNode<T>* insertAtNode(AVLNode<T> *node, AVLNode<T> *newNode);
+        AVLNode<T>* rightRotate(AVLNode<T> *node);
+        AVLNode<T>* leftRotate(AVLNode<T> *node);
+    };
+
 }
+#include "../src/ds/AVLTree.tpp"
 
 #endif //DS_H

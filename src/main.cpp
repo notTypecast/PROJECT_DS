@@ -22,7 +22,27 @@ int main() {
     partI::exercise3();
     partI::exercise4();
      */
-    partI::exercise4();
+//    utils::stock::StockDayVolume s1 = {"2005-05-05", 10}, s2 = {"2007-01-01", 50}, s3 = {"2003-04-04", 10}, s4 = {"2010-02-02", 90};
+
+    ds::AVLTree<int> tree;
+    tree.insert(10);
+    tree.printInOrder();
+    newline
+    tree.insert(20);
+    tree.printInOrder();
+    newline
+    tree.insert(30);
+    tree.printInOrder();
+    newline
+    tree.insert(40);
+    tree.printInOrder();
+    newline
+    tree.insert(50);
+    tree.printInOrder();
+    newline
+    tree.insert(25);
+    tree.printInOrder();
+
 
     return 0;
 }

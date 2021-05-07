@@ -223,7 +223,7 @@ void partI::exercise4() {
         for (int j = 0; j < (int) dataSize; ++j) {
             std::string inputDate = initialData[j].date;
 
-            const int totalRuns = 10;
+            const int totalRuns = 1;
             int totalTime = 0;
 
             // binary interpolation search

@@ -54,6 +54,7 @@ ds::AVLNode<T>* ds::AVLTree<T>::insertAtNode(AVLNode<T> *node, AVLNode<T> *newNo
         node->left = insertAtNode(node->left, newNode);
     }
     else {
+        std::cout << "and here" << std::endl;
         node->right = insertAtNode(node->right, newNode);
     }
 

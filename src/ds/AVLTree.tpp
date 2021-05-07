@@ -31,30 +31,23 @@ ds::AVLTree<T>::~AVLTree() {
 template <typename T>
 void ds::AVLTree<T>::insert(T key) {
     struct ds::AVLNode<T> *newNode = ds::createAVLNode(key);
-    if (root == nullptr) {
-        root = newNode;
-        return;
-    }
     root = insertAtNode(root, newNode);
-
-    //need to rotate
 }
 
 template <typename T>
 ds::AVLNode<T>* ds::AVLTree<T>::insertAtNode(AVLNode<T> *node, AVLNode<T> *newNode) {
+    if (node == nullptr) {
+        return newNode;
+    }
     if (newNode->key == node->key) {
         delete newNode;
         return node;
-    }
-    if (node == nullptr) {
-        return newNode;
     }
 
     if (newNode->key < node->key) {
         node->left = insertAtNode(node->left, newNode);
     }
     else {
-        std::cout << "and here" << std::endl;
         node->right = insertAtNode(node->right, newNode);
     }
 
@@ -66,25 +59,25 @@ ds::AVLNode<T>* ds::AVLTree<T>::insertAtNode(AVLNode<T> *node, AVLNode<T> *newNo
         //Left left case
         if (newNode->key < node->left->key) {
             std::cout << "left left case" << std::endl;
-            rightRotate(node);
+            return rightRotate(node);
         }
         //Left right case
         else {
             std::cout << "left right case" << std::endl;
-            leftRotate(node->left);
-            rightRotate(node);
+            node->left = leftRotate(node->left);
+            return rightRotate(node);
         }
     }
     else if (balanceFactor < -1) {
         //Right left case
         if (newNode->key < node->right->key) {
             std::cout << "right left case" << std::endl;
-            rightRotate(node->right);
-            leftRotate(node);
+            node->right = rightRotate(node->right);
+            return leftRotate(node);
         }
         //Right right case
         else {
-            leftRotate(node);
+            return leftRotate(node);
         }
     }
 

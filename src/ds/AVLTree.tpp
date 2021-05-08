@@ -8,6 +8,7 @@ struct ds::AVLNode<T>* ds::createAVLNode(T key) {
     return newNode;
 }
 
+
 template <typename T>
 ds::AVLTree<T>::AVLTree() {
     root = nullptr;
@@ -26,6 +27,25 @@ ds::AVLTree<T>::~AVLTree() {
     };
 
     F(root);
+}
+
+template <typename T>
+T* ds::AVLTree<T>::access(T key) {
+    AVLNode<T> *currentNode = root;
+
+    while (currentNode != nullptr) {
+        if (currentNode->key == key) {
+            return &currentNode->key;
+        }
+        else if (currentNode->key < key) {
+            currentNode = currentNode->right;
+        }
+        else {
+            currentNode = currentNode->left;
+        }
+    }
+
+    return nullptr;
 }
 
 template <typename T>
@@ -58,12 +78,10 @@ ds::AVLNode<T>* ds::AVLTree<T>::insertAtNode(AVLNode<T> *node, AVLNode<T> *newNo
     if (balanceFactor > 1) {
         //Left left case
         if (newNode->key < node->left->key) {
-            std::cout << "left left case" << std::endl;
             return rightRotate(node);
         }
         //Left right case
         else {
-            std::cout << "left right case" << std::endl;
             node->left = leftRotate(node->left);
             return rightRotate(node);
         }
@@ -71,7 +89,6 @@ ds::AVLNode<T>* ds::AVLTree<T>::insertAtNode(AVLNode<T> *node, AVLNode<T> *newNo
     else if (balanceFactor < -1) {
         //Right left case
         if (newNode->key < node->right->key) {
-            std::cout << "right left case" << std::endl;
             node->right = rightRotate(node->right);
             return leftRotate(node);
         }
@@ -82,8 +99,98 @@ ds::AVLNode<T>* ds::AVLTree<T>::insertAtNode(AVLNode<T> *node, AVLNode<T> *newNo
     }
 
     return node;
-
 }
+
+template <typename T>
+bool ds::AVLTree<T>::remove(T key) {
+    KEYFOUND = false;
+    removeAtNode(root, key);
+    return KEYFOUND;
+}
+
+template <typename T>
+ds::AVLNode<T>* ds::AVLTree<T>::removeAtNode(AVLNode <T> *node, T key) {
+    if (node == nullptr) {
+        return node;
+    }
+
+    if (key < node->key) {
+        node->left = removeAtNode(node->left, key);
+    }
+    else if (key > node->key) {
+        node->right = removeAtNode(node->right, key);
+    }
+    else {
+        KEYFOUND = true;
+        // at most one child
+        if (node->left == nullptr || node->right == nullptr) {
+            AVLNode<T> *tmp = node->left == nullptr ? node->right : node->left;
+            // If the node has no children, both left and right will be null, and as a result tmp will be null.
+            if (tmp == nullptr) {
+                tmp = node;
+                node = nullptr;
+            }
+            // exactly one child
+            else {
+                *node = *tmp;
+            }
+            delete tmp;
+        }
+        // two children
+        else {
+            AVLNode<T> *tmp = getSmallestNode(node->right);
+            // replacing key with min value of right subtree to preserve BST property
+            node->key = tmp->key;
+            // removing node that the deleted node was replaced with from its original position
+            node->right = removeAtNode(node->right, tmp->key);
+        }
+    }
+
+    if (node == nullptr) {
+        return node;
+    }
+
+    node->height = 1 + std::max(getNodeHeight(node->left), getNodeHeight(node->right));
+
+    int balanceFactor = getNodeBalanceFactor(node);
+
+    if (balanceFactor > 1) {
+        // Left left case
+        if (getNodeBalanceFactor(node->left) >= 0) {
+            return rightRotate(node);
+        }
+        // Left right case
+        else {
+            node->left = leftRotate(node->left);
+            return rightRotate(node);
+        }
+    }
+    else if (balanceFactor < -1) {
+        // Right right case
+        if (getNodeBalanceFactor(node->right) <= 0) {
+            return leftRotate(node);
+        }
+        // Right left case
+        else {
+            node->right = rightRotate(node->right);
+            return leftRotate(node);
+        }
+    }
+
+    return node;
+}
+
+template <typename T>
+ds::AVLNode<T>* ds::AVLTree<T>::getSmallestNode(AVLNode <T> *subRoot) {
+    if (subRoot == nullptr) {
+        return nullptr;
+    }
+    while (subRoot->left != nullptr) {
+        subRoot = subRoot->left;
+    }
+    return subRoot;
+}
+
 
 template <typename T>
 void ds::AVLTree<T>::printInOrder() {

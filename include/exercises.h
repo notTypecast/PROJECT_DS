@@ -32,8 +32,13 @@ namespace partI {
 }
 
 namespace partII {
+    template <typename T>
+    ds::AVLTree<T> loadStockDataToAVLTree(utils::csv::CSVReader &reader);
 
+    void exercise1();
 
 }
+
+#include "../src/exercises.tpp"
 
 #endif //PROJECTDS_EXERCISES_H

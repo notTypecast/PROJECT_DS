@@ -268,3 +268,90 @@ void partI::exercise4() {
     std::cout << "Total volume for given date: " << volume << std::endl;*/
 
 }
+
+void partII::exercise1() {
+    const std::string HELP = "─────────────────────────────────\n"
+                             "Available commands:\n"
+                             "-> print: Displays tree using in-order traversal.\n"
+                             "-> search: Searches tree by date and returns volume.\n"
+                             "-> edit: Edits volume for given date.\n"
+                             "-> delete: Removes tree node for given date.\n"
+                             "-> exit: Quits the menu.\n"
+                             "─────────────────────────────────\n";
+
+    utils::csv::CSVReader reader("../data/agn.us.txt");
+    int dataSize = (int) reader.getTotalRows() - 2;
+    auto tree = partII::loadStockDataToAVLTree<utils::stock::SDV_KeyDate>(reader);
+
+    std::string input;
+    std::string input2;
+
+    std::cout << HELP;
+
+    while (true) {
+        std::cout << ">> ";
+        std::getline(std::cin, input);
+        utils::string::lower(input);
+
+        if (input == "exit") {
+            break;
+        }
+        else if (input == "help") {
+            std::cout << HELP;
+        }
+        else if (input == "print") {
+            tree.printInOrder();
+        }
+        else if (input == "search" || input == "edit" || input == "delete") {
+            std::cout << "Input date (YYYY-MM-DD): ";
+            std::getline(std::cin, input2);
+            if (std::regex_match(input2, std::regex(utils::regex::DATE))) {
+                utils::stock::SDV_KeyDate acc;
+                acc.date = input2;
+                utils::stock::SDV_KeyDate *key = tree.access(acc);
+                if (key == nullptr) {
+                    std::cout << "Date not found." << std::endl;
+                    continue;
+                }
+                if (input == "search") {
+                    std::cout << "Volume for " << input << ": " << key->volume << std::endl;
+                }
+                else if (input == "edit"){
+                    while (true) {
+                        std::cout << "New volume: ";
+                        std::getline(std::cin, input2);
+                        try {
+                            int newVolume = std::stoi(input2);
+                            if (newVolume < 0) {
+                                throw std::invalid_argument("Must be non-negative.");
+                            }
+                            key->volume = newVolume;
+                            break;
+                        }
+                        catch (const std::invalid_argument& exc) {
+                            std::cout << "Expected a non-negative integer." << std::endl;
+                        }
+                    }
+                }
+                else if (input == "delete") {
+                    if (tree.remove(acc)) {
+                        std::cout << "Successfully deleted entry." << std::endl;
+                    }
+                    else {
+                        std::cout << "Entry not found." << std::endl;
+                    }
+                }
+            }
+            else {
+                std::cout << "Invalid date. Must be YYYY-MM-DD." << std::endl;
+            }
+
+        }
+        else {
+            std::cout << "Unknown command. Type help for a list of commands." << std::endl;
+        }
+
+    }
+
+
+}

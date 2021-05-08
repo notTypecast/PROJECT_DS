@@ -51,35 +51,59 @@ namespace ds {
         void heapifyDown(int index);
     };
 
-    template <typename T>
+    template<typename T>
     struct AVLNode {
         T key;
-        AVLNode* left;
-        AVLNode* right;
+        AVLNode *left;
+        AVLNode *right;
         int height;
     };
 
-    template <typename T>
-    struct AVLNode<T>* createAVLNode(T key);
+    template<typename T>
+    struct AVLNode<T> *createAVLNode(T key);
 
-    template <typename T>
+    template<typename T>
     class AVLTree {
     public:
         AVLTree();
+
         ~AVLTree();
+
+        /// \details This method returns a pointer to the key of the element being accessed.
+        /// The actual key of the element should never be edited (since this can destroy the balance of the AVL tree).
+        /// Only edit the element using the pointer if the tree type is non-primitive and the properties being
+        /// edited are not the key.
+        T *access(T key);
+
         void insert(T key);
+
+        bool remove(T key);
+
         void printInOrder();
-        struct AVLNode<T> *root;
+
     private:
-        void printInOrderRecursively(ds::AVLNode<T>* currentNode);
-        int getNodeHeight(ds::AVLNode<T>* node);
-        int getNodeBalanceFactor(ds::AVLNode<T>* node);
-        AVLNode<T>* insertAtNode(AVLNode<T> *node, AVLNode<T> *newNode);
-        AVLNode<T>* rightRotate(AVLNode<T> *node);
-        AVLNode<T>* leftRotate(AVLNode<T> *node);
+        struct AVLNode<T> *root;
+        bool KEYFOUND;
+
+        void printInOrderRecursively(ds::AVLNode<T> *currentNode);
+
+        int getNodeHeight(ds::AVLNode<T> *node);
+
+        int getNodeBalanceFactor(ds::AVLNode<T> *node);
+
+        AVLNode<T> *insertAtNode(AVLNode<T> *node, AVLNode<T> *newNode);
+
+        AVLNode<T> *removeAtNode(AVLNode<T> *node, T key);
+
+        AVLNode<T> *rightRotate(AVLNode<T> *node);
+
+        AVLNode<T> *leftRotate(AVLNode<T> *node);
+
+        AVLNode<T> *getSmallestNode(AVLNode<T> *subRoot);
     };
 
 }
+
 #include "../src/ds/AVLTree.tpp"
 
 #endif //DS_H

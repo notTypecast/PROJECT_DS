@@ -22,6 +22,6 @@ int main() {
     partI::exercise3();
     partI::exercise4();
      */
-    partII::exercise2();
+    partII::exercise3();
     return 0;
 }

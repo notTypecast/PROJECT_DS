@@ -63,6 +63,7 @@ namespace utils {
             inline bool operator>= (const StockDayVolume& other) const {return date >= other.date;}
             inline bool operator== (const StockDayVolume& other) const {return date == other.date;}
             inline bool operator!= (const StockDayVolume& other) const {return date != other.date;}
+            int operator% (int divisor) const;
             inline friend std::ostream & operator<< (std::ostream &out, const struct SDV_KeyDate& s) {
                 out << s.date << " " << s.volume;
                 return out;

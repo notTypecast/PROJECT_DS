@@ -34,10 +34,13 @@ namespace partI {
 namespace partII {
     template <typename T>
     ds::AVLTree<T> loadStockDataToAVLTree(utils::csv::CSVReader &reader);
+    ds::HashTable<utils::stock::SDV_KeyDate> loadStockDataToHashTable(utils::csv::CSVReader &reader);
 
     void exercise1();
 
     void exercise2();
+
+    void exercise3();
 
 }
 

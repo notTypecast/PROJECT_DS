@@ -60,8 +60,10 @@ namespace ds {
         int height;
     };
 
+    //TODO: mention that LinkedKey's destructor is responsible for deleting next, but not key
     template <typename T>
     struct LinkedKey {
+        LinkedKey();
         LinkedKey(T *key, LinkedKey<T> *next);
         ~LinkedKey();
         T *key;
@@ -69,7 +71,7 @@ namespace ds {
     };
 
     template<typename T>
-    struct AVLNode<T> *createAVLNode(T key);
+    struct AVLNode<T> *createAVLNode(const T &key);
 
     template <typename T>
     LinkedKey<T>* createLinkedKey(AVLNode<T>* node);
@@ -85,11 +87,11 @@ namespace ds {
         /// The actual key of the element should never be edited (since this can destroy the balance of the AVL tree).
         /// Only edit the element using the pointer if the tree type is non-primitive and the properties being
         /// edited are not the key.
-        ds::LinkedKey<T>* access(T key);
+        ds::LinkedKey<T>* access(const T &key);
 
-        void insert(T key);
+        void insert(const T &key);
 
-        bool remove(T key);
+        bool remove(const T &key);
 
         ds::LinkedKey<T>* getMinKey();
 
@@ -109,7 +111,7 @@ namespace ds {
 
         AVLNode<T> *insertAtNode(AVLNode<T> *node, AVLNode<T> *newNode);
 
-        AVLNode<T> *removeAtNode(AVLNode<T> *node, T key);
+        AVLNode<T> *removeAtNode(AVLNode<T> *node, const T &key);
 
         AVLNode<T> *rightRotate(AVLNode<T> *node);
 
@@ -120,8 +122,24 @@ namespace ds {
         void deleteNode(AVLNode<T> *node);
     };
 
+    template <typename T>
+    class HashTable {
+    public:
+        HashTable(unsigned int M);
+        ~HashTable();
+        ds::LinkedKey<T>* access(const T &key);
+        void insert(const T &key);
+        bool remove(const T &key);
+
+    private:
+        const unsigned int M;
+        LinkedKey<T> *internalArray;
+
+    };
+
 }
 
 #include "../src/ds/AVLTree.tpp"
+#include "../src/ds/HashTable.tpp"
 
 #endif //DS_H

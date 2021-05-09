@@ -28,6 +28,29 @@ utils::stock::StockDayData *partI::loadStockData(utils::csv::CSVReader &reader) 
 
 }
 
+ds::HashTable<utils::stock::SDV_KeyDate> partII::loadStockDataToHashTable(utils::csv::CSVReader &reader) {
+    // hash table M will be equal to total number of entries
+    ds::HashTable<utils::stock::SDV_KeyDate> table((unsigned int)(reader.getTotalRows() - 2));
+
+    std::string *currLine;
+    int index = 0;
+    while (true) {
+        // read new line from file
+        currLine = reader.getrow();
+        // stop if empty line is found
+        if (currLine[0].empty()) break;
+        // save data to struct in array
+        utils::stock::SDV_KeyDate newEntry;
+        newEntry.date = currLine[0];
+        newEntry.volume = std::stoi(currLine[5]);
+        table.insert(newEntry);
+        // delete string array allocated for line
+        delete[] currLine;
+    }
+
+    return table;
+}
+
 void partI::exercise1(const std::string &fileName) {
     std::cout << "Running for file: " << fileName << std::endl;
 
@@ -315,6 +338,7 @@ void partII::exercise1() {
                     continue;
                 }
                 utils::stock::SDV_KeyDate *key = linkedKey->key;
+                // deleting LinkedKey object since it was created only to be returned
                 delete linkedKey;
                 if (input == "search") {
                     std::cout << "Volume for " << input << ": " << key->volume << std::endl;
@@ -387,8 +411,8 @@ void partII::exercise2() {
             tree.printInOrder();
         }
         else if (input == "max") {
-            std::cout << "Date(s) with maximum volume: ";
             ds::LinkedKey<utils::stock::SDV_KeyVolume> *maxKey = tree.getMaxKey();
+            std::cout << "Date(s) with volume " << maxKey->key->volume << " (maximum): ";
             while (maxKey != nullptr) {
                 std::cout << maxKey->key->date << " ";
                 maxKey = maxKey->next;
@@ -396,13 +420,98 @@ void partII::exercise2() {
             std::cout << std::endl;
         }
         else if (input == "min") {
-            std::cout << "Date(s) with minimum volume: ";
             ds::LinkedKey<utils::stock::SDV_KeyVolume> *minKey = tree.getMinKey();
+            std::cout << "Date(s) with volume " << minKey->key->volume << " (minimum): ";
             while (minKey != nullptr) {
                 std::cout << minKey->key->date << " ";
                 minKey = minKey->next;
             }
             std::cout << std::endl;
+        }
+        else {
+            std::cout << "Unknown command. Type help for a list of commands." << std::endl;
+        }
+    }
+
+}
+
+void partII::exercise3() {
+    const std::string HELP = "─────────────────────────────────\n"
+                             "Available commands:\n"
+                             "-> print: Displays tree using in-order traversal.\n"
+                             "-> max: Get date(s) with maximum trade volume.\n"
+                             "-> min: Get date(s) with minimum trade volume.\n"
+                             "-> exit: Quits the menu.\n"
+                             "─────────────────────────────────\n";
+
+    utils::csv::CSVReader reader("../data/agn.us.txt");
+    auto table = partII::loadStockDataToHashTable(reader);
+
+    std::string input;
+    std::string input2;
+
+    std::cout << HELP;
+
+    while (true) {
+        std::cout << ">> ";
+        std::getline(std::cin, input);
+        utils::string::lower(input);
+
+        if (input == "exit") {
+            break;
+        }
+        else if (input == "help") {
+            std::cout << HELP;
+        }
+        else if (input == "print") {
+
+        }
+        else if (input == "search" || input == "edit" || input == "delete") {
+            std::cout << "Input date (YYYY-MM-DD): ";
+            std::getline(std::cin, input2);
+            if (std::regex_match(input2, std::regex(utils::regex::DATE))) {
+                utils::stock::SDV_KeyDate acc;
+                acc.date = input2;
+                // there are no duplicate dates, since this is a hash table
+                // therefore, no need to traverse linked list for same
+                ds::LinkedKey<utils::stock::SDV_KeyDate> *linkedKey = table.access(acc);
+                if (linkedKey == nullptr) {
+                    std::cout << "Date not found." << std::endl;
+                    continue;
+                }
+                utils::stock::SDV_KeyDate *key = linkedKey->key;
+                if (input == "search") {
+                    std::cout << "Volume for " << input << ": " << key->volume << std::endl;
+                }
+                else if (input == "edit"){
+                    while (true) {
+                        std::cout << "New volume: ";
+                        std::getline(std::cin, input2);
+                        try {
+                            int newVolume = std::stoi(input2);
+                            if (newVolume < 0) {
+                                throw std::invalid_argument("Must be non-negative.");
+                            }
+                            key->volume = newVolume;
+                            break;
+                        }
+                        catch (const std::invalid_argument& exc) {
+                            std::cout << "Expected a non-negative integer." << std::endl;
+                        }
+                    }
+                }
+                else if (input == "delete") {
+                    if (table.remove(acc)) {
+                        std::cout << "Successfully deleted entry." << std::endl;
+                    }
+                    else {
+                        std::cout << "Entry not found." << std::endl;
+                    }
+                }
+            }
+            else {
+                std::cout << "Invalid date. Must be YYYY-MM-DD." << std::endl;
+            }
         }
         else {
             std::cout << "Unknown command. Type help for a list of commands." << std::endl;

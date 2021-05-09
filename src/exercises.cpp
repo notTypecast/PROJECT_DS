@@ -280,7 +280,6 @@ void partII::exercise1() {
                              "─────────────────────────────────\n";
 
     utils::csv::CSVReader reader("../data/agn.us.txt");
-    int dataSize = (int) reader.getTotalRows() - 2;
     auto tree = partII::loadStockDataToAVLTree<utils::stock::SDV_KeyDate>(reader);
 
     std::string input;
@@ -308,11 +307,15 @@ void partII::exercise1() {
             if (std::regex_match(input2, std::regex(utils::regex::DATE))) {
                 utils::stock::SDV_KeyDate acc;
                 acc.date = input2;
-                utils::stock::SDV_KeyDate *key = tree.access(acc);
-                if (key == nullptr) {
+                // this avl tree has unique keys, since there are no duplicate dates
+                // therefore, no need to traverse linked list for same
+                ds::LinkedKey<utils::stock::SDV_KeyDate> *linkedKey = tree.access(acc);
+                if (linkedKey == nullptr) {
                     std::cout << "Date not found." << std::endl;
                     continue;
                 }
+                utils::stock::SDV_KeyDate *key = linkedKey->key;
+                delete linkedKey;
                 if (input == "search") {
                     std::cout << "Volume for " << input << ": " << key->volume << std::endl;
                 }
@@ -350,8 +353,60 @@ void partII::exercise1() {
         else {
             std::cout << "Unknown command. Type help for a list of commands." << std::endl;
         }
-
     }
+}
 
+void partII::exercise2() {
+    const std::string HELP = "─────────────────────────────────\n"
+                             "Available commands:\n"
+                             "-> print: Displays tree using in-order traversal.\n"
+                             "-> max: Get date(s) with maximum trade volume.\n"
+                             "-> min: Get date(s) with minimum trade volume.\n"
+                             "-> exit: Quits the menu.\n"
+                             "─────────────────────────────────\n";
+
+    utils::csv::CSVReader reader("../data/agn.us.txt");
+    auto tree = partII::loadStockDataToAVLTree<utils::stock::SDV_KeyVolume>(reader);
+
+    std::string input;
+
+    std::cout << HELP;
+
+    while (true) {
+        std::cout << ">> ";
+        std::getline(std::cin, input);
+        utils::string::lower(input);
+
+        if (input == "exit") {
+            break;
+        }
+        else if (input == "help") {
+            std::cout << HELP;
+        }
+        else if (input == "print") {
+            tree.printInOrder();
+        }
+        else if (input == "max") {
+            std::cout << "Date(s) with maximum volume: ";
+            ds::LinkedKey<utils::stock::SDV_KeyVolume> *maxKey = tree.getMaxKey();
+            while (maxKey != nullptr) {
+                std::cout << maxKey->key->date << " ";
+                maxKey = maxKey->next;
+            }
+            std::cout << std::endl;
+        }
+        else if (input == "min") {
+            std::cout << "Date(s) with minimum volume: ";
+            ds::LinkedKey<utils::stock::SDV_KeyVolume> *minKey = tree.getMinKey();
+            while (minKey != nullptr) {
+                std::cout << minKey->key->date << " ";
+                minKey = minKey->next;
+            }
+            std::cout << std::endl;
+        }
+        else {
+            std::cout << "Unknown command. Type help for a list of commands." << std::endl;
+        }
+    }
 
 }

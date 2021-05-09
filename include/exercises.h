@@ -37,6 +37,8 @@ namespace partII {
 
     void exercise1();
 
+    void exercise2();
+
 }
 
 #include "../src/exercises.tpp"

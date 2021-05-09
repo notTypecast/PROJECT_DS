@@ -1,17 +1,46 @@
+
+#include "../../include/ds.h"
+
 template <typename T>
 struct ds::AVLNode<T>* ds::createAVLNode(T key) {
     struct ds::AVLNode<T> *newNode = new struct ds::AVLNode<T>();
     newNode->key = key;
     newNode->left = nullptr;
     newNode->right = nullptr;
+    newNode->same = nullptr;
     newNode->height = 1;
     return newNode;
 }
 
+template <typename T>
+ds::LinkedKey<T>* ds::createLinkedKey(AVLNode <T> *node) {
+    if (node == nullptr) {
+        return nullptr;
+    }
+    LinkedKey<T> *current = new LinkedKey<T>(&node->key, nullptr);
+    LinkedKey<T> *toReturn = current;
+    while (node->same != nullptr) {
+        current->next = new LinkedKey<T>(&node->same->key, nullptr);
+        node = node->same;
+        current = current->next;
+    }
+    return toReturn;
+}
 
 template <typename T>
 ds::AVLTree<T>::AVLTree() {
     root = nullptr;
+}
+
+template <typename T>
+ds::LinkedKey<T>::LinkedKey(T *key, ds::LinkedKey<T> *next) : key(key), next(next) {}
+
+template <typename T>
+ds::LinkedKey<T>::~LinkedKey() {
+    // chain delete by calling next element destructor
+    if (next != nullptr) {
+        delete next;
+    }
 }
 
 template <typename T>
@@ -23,19 +52,43 @@ ds::AVLTree<T>::~AVLTree() {
         if (node->right != nullptr) {
             F(node->right);
         }
-        delete node;
+        deleteNode(node);
     };
 
     F(root);
 }
 
 template <typename T>
-T* ds::AVLTree<T>::access(T key) {
+ds::LinkedKey<T>* ds::AVLTree<T>::getMaxKey() {
+    AVLNode<T> *tmp = root;
+    while (tmp->right != nullptr) {
+        tmp = tmp->right;
+    }
+    return ds::createLinkedKey(tmp);
+}
+
+template <typename T>
+ds::LinkedKey<T>* ds::AVLTree<T>::getMinKey() {
+    return ds::createLinkedKey(getSmallestNode(root));
+}
+
+template <typename T>
+void ds::AVLTree<T>::deleteNode(AVLNode <T> *node) {
+    AVLNode<T> *tmp;
+    while (node != nullptr) {
+        tmp = node->same;
+        delete node;
+        node = tmp;
+    }
+}
+
+template <typename T>
+ds::LinkedKey<T>* ds::AVLTree<T>::access(T key) {
     AVLNode<T> *currentNode = root;
 
     while (currentNode != nullptr) {
         if (currentNode->key == key) {
-            return &currentNode->key;
+            return ds::createLinkedKey(currentNode);
         }
         else if (currentNode->key < key) {
             currentNode = currentNode->right;
@@ -60,7 +113,11 @@ ds::AVLNode<T>* ds::AVLTree<T>::insertAtNode(AVLNode<T> *node, AVLNode<T> *newNo
         return newNode;
     }
     if (newNode->key == node->key) {
-        delete newNode;
+        AVLNode<T> *tmp = node;
+        while (tmp->same != nullptr) {
+            tmp = tmp->same;
+        }
+        tmp->same = newNode;
         return node;
     }
 
@@ -134,7 +191,7 @@ ds::AVLNode<T>* ds::AVLTree<T>::removeAtNode(AVLNode <T> *node, T key) {
             else {
                 *node = *tmp;
             }
-            delete tmp;
+            deleteNode(tmp);
         }
         // two children
         else {
@@ -204,7 +261,13 @@ void ds::AVLTree<T>::printInOrderRecursively(ds::AVLNode<T> *currentNode) {
         if (currentNode->left != nullptr) {
             printInOrderRecursively(currentNode->left);
         }
-        std::cout << currentNode->key << std::endl;
+        std::cout << currentNode->key;
+        AVLNode<T> *tmp = currentNode->same;
+        while (tmp != nullptr) {
+            std::cout << " -> " << tmp->key;
+            tmp = tmp->same;
+        }
+        std::cout << std::endl;
         if (currentNode->right != nullptr) {
             printInOrderRecursively(currentNode->right);
         }

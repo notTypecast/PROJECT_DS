@@ -56,11 +56,23 @@ namespace ds {
         T key;
         AVLNode *left;
         AVLNode *right;
+        AVLNode *same;
         int height;
+    };
+
+    template <typename T>
+    struct LinkedKey {
+        LinkedKey(T *key, LinkedKey<T> *next);
+        ~LinkedKey();
+        T *key;
+        LinkedKey *next;
     };
 
     template<typename T>
     struct AVLNode<T> *createAVLNode(T key);
+
+    template <typename T>
+    LinkedKey<T>* createLinkedKey(AVLNode<T>* node);
 
     template<typename T>
     class AVLTree {
@@ -73,11 +85,15 @@ namespace ds {
         /// The actual key of the element should never be edited (since this can destroy the balance of the AVL tree).
         /// Only edit the element using the pointer if the tree type is non-primitive and the properties being
         /// edited are not the key.
-        T *access(T key);
+        ds::LinkedKey<T>* access(T key);
 
         void insert(T key);
 
         bool remove(T key);
+
+        ds::LinkedKey<T>* getMinKey();
+
+        ds::LinkedKey<T>* getMaxKey();
 
         void printInOrder();
 
@@ -100,6 +116,8 @@ namespace ds {
         AVLNode<T> *leftRotate(AVLNode<T> *node);
 
         AVLNode<T> *getSmallestNode(AVLNode<T> *subRoot);
+
+        void deleteNode(AVLNode<T> *node);
     };
 
 }

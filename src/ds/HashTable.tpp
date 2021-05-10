@@ -53,6 +53,7 @@ bool ds::HashTable<T>::remove(const T &key) {
     }
     else if (*internalArray[index].key == key) {
         delete internalArray[index].key;
+        internalArray[index].key = nullptr;
         if (internalArray[index].next != nullptr) {
             internalArray[index].key = internalArray[index].next->key;
             LinkedKey<T> *toDelete = internalArray[index].next;
@@ -78,4 +79,24 @@ bool ds::HashTable<T>::remove(const T &key) {
     ds::safeDeleteLinkedKey(toDelete);
     ds::safeDeleteLinkedKey(initial);
     return true;
+}
+
+template <typename T>
+void ds::HashTable<T>::print() {
+    LinkedKey<T> *current;
+    for (int i = 0; i < M; ++i) {
+        current = &internalArray[i];
+        if (current->key == nullptr) {
+            continue;
+        }
+        while (true) {
+            std::cout << *current->key;
+            if (current->next == nullptr) {
+                break;
+            }
+            std::cout << " -> ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
 }

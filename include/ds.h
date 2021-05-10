@@ -76,6 +76,11 @@ namespace ds {
     template <typename T>
     LinkedKey<T>* createLinkedKey(AVLNode<T>* node);
 
+    // delete linked key without deleting chain
+    template <typename T>
+    /// \details Safely detaches and deletes LinkedKey.
+    void safeDeleteLinkedKey(LinkedKey<T> *key);
+
     template<typename T>
     class AVLTree {
     public:
@@ -130,6 +135,7 @@ namespace ds {
         ds::LinkedKey<T>* access(const T &key);
         void insert(const T &key);
         bool remove(const T &key);
+        void print();
 
     private:
         const unsigned int M;
@@ -141,5 +147,6 @@ namespace ds {
 
 #include "../src/ds/AVLTree.tpp"
 #include "../src/ds/HashTable.tpp"
+#include "../src/ds/ds.tpp"
 
 #endif //DS_H

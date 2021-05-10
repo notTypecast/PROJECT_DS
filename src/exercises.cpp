@@ -29,8 +29,9 @@ utils::stock::StockDayData *partI::loadStockData(utils::csv::CSVReader &reader) 
 }
 
 ds::HashTable<utils::stock::SDV_KeyDate> partII::loadStockDataToHashTable(utils::csv::CSVReader &reader) {
-    // hash table M will be equal to total number of entries
-    ds::HashTable<utils::stock::SDV_KeyDate> table((unsigned int)(reader.getTotalRows() - 2));
+    // making sure M is odd
+    // TODO: explain why 27 is the optimal M
+    ds::HashTable<utils::stock::SDV_KeyDate> table(27);
 
     std::string *currLine;
     int index = 0;
@@ -332,14 +333,17 @@ void partII::exercise1() {
                 acc.date = input2;
                 // this avl tree has unique keys, since there are no duplicate dates
                 // therefore, no need to traverse linked list for same
-                ds::LinkedKey<utils::stock::SDV_KeyDate> *linkedKey = tree.access(acc);
-                if (linkedKey == nullptr) {
-                    std::cout << "Date not found." << std::endl;
-                    continue;
+                utils::stock::SDV_KeyDate *key;
+                if (input != "delete") {
+                    ds::LinkedKey<utils::stock::SDV_KeyDate> *linkedKey = tree.access(acc);
+                    if (linkedKey == nullptr) {
+                        std::cout << "Date not found." << std::endl;
+                        continue;
+                    }
+                    key = linkedKey->key;
+                    // deleting LinkedKey object since it was created only to be returned
+                    delete linkedKey;
                 }
-                utils::stock::SDV_KeyDate *key = linkedKey->key;
-                // deleting LinkedKey object since it was created only to be returned
-                delete linkedKey;
                 if (input == "search") {
                     std::cout << "Volume for " << input << ": " << key->volume << std::endl;
                 }
@@ -439,8 +443,9 @@ void partII::exercise3() {
     const std::string HELP = "─────────────────────────────────\n"
                              "Available commands:\n"
                              "-> print: Displays tree using in-order traversal.\n"
-                             "-> max: Get date(s) with maximum trade volume.\n"
-                             "-> min: Get date(s) with minimum trade volume.\n"
+                             "-> search: Searches tree by date and returns volume.\n"
+                             "-> edit: Edits volume for given date.\n"
+                             "-> delete: Removes tree node for given date.\n"
                              "-> exit: Quits the menu.\n"
                              "─────────────────────────────────\n";
 
@@ -464,7 +469,7 @@ void partII::exercise3() {
             std::cout << HELP;
         }
         else if (input == "print") {
-
+            table.print();
         }
         else if (input == "search" || input == "edit" || input == "delete") {
             std::cout << "Input date (YYYY-MM-DD): ";
@@ -474,12 +479,15 @@ void partII::exercise3() {
                 acc.date = input2;
                 // there are no duplicate dates, since this is a hash table
                 // therefore, no need to traverse linked list for same
-                ds::LinkedKey<utils::stock::SDV_KeyDate> *linkedKey = table.access(acc);
-                if (linkedKey == nullptr) {
-                    std::cout << "Date not found." << std::endl;
-                    continue;
+                utils::stock::SDV_KeyDate *key;
+                if (input != "delete") {
+                    ds::LinkedKey<utils::stock::SDV_KeyDate> *linkedKey = table.access(acc);
+                    if (linkedKey == nullptr) {
+                        std::cout << "Date not found." << std::endl;
+                        continue;
+                    }
+                    key = linkedKey->key;
                 }
-                utils::stock::SDV_KeyDate *key = linkedKey->key;
                 if (input == "search") {
                     std::cout << "Volume for " << input << ": " << key->volume << std::endl;
                 }

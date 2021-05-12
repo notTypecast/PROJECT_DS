@@ -4,24 +4,46 @@
 #include "../include/algo.h"
 #include "../include/ds.h"
 
-#define newline std::cout << std::endl;
-
 int main() {
-    /*
-    partI::exercise1("../data/agn.us.txt");
-    partI::exercise1("../data/ainv.us.txt");
-    partI::exercise1("../data/ale.us.txt");
-    newline
-    newline
-    partI::exercise2("../data/agn.us.txt");
-    std::cout << std::endl;
-    partI::exercise2("../data/ainv.us.txt");
-    std::cout << std::endl;
-    partI::exercise2("../data/ale.us.txt");
-    newline
-    partI::exercise3();
-    partI::exercise4();
-     */
-    partII::exercise3();
+    std::string input;
+
+    while (true) {
+        std::cout << "Part I or II? (1/2)" << std::endl << "> ";
+        std::getline(std::cin, input);
+        utils::string::lower(input);
+
+        if (input == "1") {
+            std::cout << "Exercise 1" << std::endl << "─────────────────────────────────" << std::endl;
+            partI::exercise1("../data/agn.us.txt");
+            partI::exercise1("../data/ainv.us.txt");
+            partI::exercise1("../data/ale.us.txt");
+            std::cout << "─────────────────────────────────" << std::endl;
+
+            std::cout << "Exercise 2" << std::endl << "─────────────────────────────────" << std::endl;
+            partI::exercise2("../data/agn.us.txt");
+            partI::exercise2("../data/ainv.us.txt");
+            partI::exercise2("../data/ale.us.txt");
+            std::cout << "─────────────────────────────────" << std::endl;
+
+            std::cout << "Exercise 3" << std::endl << "─────────────────────────────────" << std::endl;
+            partI::exercise3();
+            std::cout << "─────────────────────────────────" << std::endl;
+
+            /*
+            std::cout << "Exercise 4" << std::endl << "─────────────────────────────────" << std::endl;
+            partI::exercise4();
+            std::cout << "─────────────────────────────────" << std::endl;
+             */
+        }
+        else if (input == "2") {
+            partII::run();
+        }
+        else {
+            std::cout << "Expected 1 or 2." << std::endl;
+            continue;
+        }
+        break;
+    }
+
     return 0;
 }

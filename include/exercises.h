@@ -42,6 +42,8 @@ namespace partII {
 
     void exercise3();
 
+    void run();
+
 }
 
 #include "../src/exercises.tpp"

@@ -144,12 +144,7 @@ void partI::exercise2(const std::string &fileName) {
     //counting sort
     for (int i = 0; i < totalRuns; ++i) {
         totalTime += (int) utils::timer::timeit<std::function<void()>>([dataToSort, dataSize]() {
-            utils::stock::StockDayData *output = algo::countingSort(dataToSort, dataSize);
-            for (int i = 0; i < dataSize; ++i) {
-                std::cout << output[i].date << " " <<  output[i].close << std::endl;
-            }
-            delete[] output;
-            exit(0);
+            delete[] algo::countingSort(dataToSort, dataSize);
         });
     }
 
@@ -247,7 +242,7 @@ void partI::exercise4() {
         for (int j = 0; j < (int) dataSize; ++j) {
             std::string inputDate = initialData[j].date;
 
-            const int totalRuns = 1;
+            const int totalRuns = 10;
             int totalTime = 0;
 
             // binary interpolation search
@@ -282,10 +277,10 @@ void partI::exercise4() {
     }
 
     std::cout << "BIS" << std::endl;
-    std::cout << "Average worst time: " << bistime / totalOutsideRuns << std::endl;
+    std::cout << "Average worst time: " << bistime / totalOutsideRuns << "us" << std::endl;
 
     std::cout << "Improved BIS" << std::endl;
-    std::cout << "Average worst time: " << ibistime / totalOutsideRuns << std::endl;
+    std::cout << "Average worst time: " << ibistime / totalOutsideRuns << "us" << std::endl;
 
     /*
     int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
@@ -526,4 +521,47 @@ void partII::exercise3() {
         }
     }
 
+}
+
+void partII::run() {
+    std::string input;
+
+    while (true) {
+        std::cout << "Load data using a binary search tree or a hash table? (BST/HT)" << std::endl << "> ";
+        std::getline(std::cin, input);
+        utils::string::lower(input);
+
+        if (input == "bst") {
+            while (true) {
+                std::cout << "Sort based on dates or volume? (D/V)" << std::endl << "> ";
+                std::getline(std::cin, input);
+                utils::string::lower(input);
+
+                if (input == "d") {
+                    partII::exercise1();
+                }
+                else if (input == "v") {
+                    partII::exercise2();
+                }
+                else if (input == "back") {
+                    break;
+                }
+                else {
+                    std::cout << "Unrecognized option. Expected D or V." << std::endl;
+                    continue;
+                }
+                break;
+            }
+        }
+        else if (input == "ht") {
+            exercise3();
+        }
+        else if (input == "exit") {
+            break;
+        }
+        else {
+            std::cout << "Unrecognized option. Expected BST or HT." << std::endl;
+            continue;
+        }
+    }
 }

@@ -2,7 +2,8 @@
 
 int algo::partition(utils::stock::StockDayData* data, int left, int right) {
     // using the right-most element as pivot
-    utils::stock::StockDayData pivot = data[right];
+    int pivotIndex = (left + right) / 2;
+    utils::stock::StockDayData pivot = data[pivotIndex];
     int index = left - 1;
 
     for (int j = left; j < right; ++j) {
@@ -12,7 +13,7 @@ int algo::partition(utils::stock::StockDayData* data, int left, int right) {
         }
     }
 
-    utils::swap<utils::stock::StockDayData>(data[++index], data[right]);
+    utils::swap<utils::stock::StockDayData>(data[++index], data[pivotIndex]);
 
     return index;
 }

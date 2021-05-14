@@ -29,12 +29,10 @@ utils::stock::StockDayData *partI::loadStockData(utils::csv::CSVReader &reader) 
 }
 
 ds::HashTable<utils::stock::SDV_KeyDate> partII::loadStockDataToHashTable(utils::csv::CSVReader &reader) {
-    // making sure M is odd
     // TODO: explain why 27 is the optimal M
     ds::HashTable<utils::stock::SDV_KeyDate> table(27);
 
     std::string *currLine;
-    int index = 0;
     while (true) {
         // read new line from file
         currLine = reader.getrow();
@@ -86,7 +84,7 @@ void partI::exercise1(const std::string &fileName) {
          * function in its body, providing the captured variables as arguments.
          *
          */
-        totalTime += (int) utils::timer::timeit < std::function < void() >> (
+        totalTime += (int) utils::timer::timeit<std::function<void() >>(
                 [dataToSort, dataSize]() { algo::mergeSort(dataToSort, 0, dataSize - 1); });
     }
     // get average runtime
@@ -99,7 +97,7 @@ void partI::exercise1(const std::string &fileName) {
     // quick sort
     for (int i = 0; i < totalRuns; ++i) {
         std::copy(initialData, initialData + dataSize, dataToSort);
-        totalTime += (int) utils::timer::timeit < std::function < void() >> (
+        totalTime += (int) utils::timer::timeit<std::function<void() >>(
                 [dataToSort, dataSize]() { algo::quickSort(dataToSort, 0, dataSize - 1); });
     }
 
@@ -175,8 +173,8 @@ void partI::exercise3() {
     }
 
     utils::csv::CSVReader reader("../data/agn.us.txt");
-    int dataSize =  (int)reader.getTotalRows() - 2;
-    utils::stock::StockDayData* initialData = partI::loadStockData(reader);
+    int dataSize = (int) reader.getTotalRows() - 2;
+    utils::stock::StockDayData *initialData = partI::loadStockData(reader);
 
     // dataset is sorted by dates (ascending) so we can perform binary search on array
     const int totalRuns = 1000;
@@ -184,10 +182,11 @@ void partI::exercise3() {
 
     //binary search
     for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int)utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {algo::binarySearch(initialData, 0, dataSize - 1, inputDate);});
+        totalTime += (int) utils::timer::timeit<std::function<void()>>(
+                [initialData, dataSize, inputDate]() { algo::binarySearch(initialData, 0, dataSize - 1, inputDate); });
     }
 
-    double averageBinarySearchTime = ((double)totalTime) / totalRuns;
+    double averageBinarySearchTime = ((double) totalTime) / totalRuns;
 
     std::cout << "Average binary search time: " << averageBinarySearchTime << "us" << std::endl;
 
@@ -195,10 +194,12 @@ void partI::exercise3() {
 
     //interpolation search
     for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int)utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {algo::interpolationSearch(initialData, 0, dataSize - 1, inputDate);});
+        totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
+            algo::interpolationSearch(initialData, 0, dataSize - 1, inputDate);
+        });
     }
 
-    double averageInterpolationSearchTime = ((double)totalTime) / totalRuns;
+    double averageInterpolationSearchTime = ((double) totalTime) / totalRuns;
 
     std::cout << "Average interpolation search time: " << averageInterpolationSearchTime << "us" << std::endl;
 
@@ -224,63 +225,23 @@ void partI::exercise4() {
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
 
-    typedef struct {
-        utils::stock::StockDayData stockStruct;
-        double currentWorstTime;
-    } test;
 
-    double bistime = 0;
-    double ibistime = 0;
-    const int totalOutsideRuns = 100;
+    const int totalElements = 3000;
+    int *allTimes = new int[totalElements];
 
-    for (int k = 0; k < totalOutsideRuns; ++k) {
-        test BIS;
-        BIS.currentWorstTime = 0;
-        test improvedBIS;
-        improvedBIS.currentWorstTime = 0;
+    for (int k = 0; k < totalElements; ++k) {
+        std::string inputDate = initialData[k].date;
 
-        for (int j = 0; j < (int) dataSize; ++j) {
-            std::string inputDate = initialData[j].date;
-
-            const int totalRuns = 10;
-            int totalTime = 0;
-
-            // binary interpolation search
-            for (int i = 0; i < totalRuns; ++i) {
-                totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
-                    algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
-                });
-            }
-
-            double averageBinaryInterpolationSearchTime = ((double) totalTime) / totalRuns;
-            if (averageBinaryInterpolationSearchTime > BIS.currentWorstTime) {
-                BIS.currentWorstTime = averageBinaryInterpolationSearchTime;
-                BIS.stockStruct = initialData[j];
-            }
-
-            totalTime = 0;
-
-            // improved BIS
-            for (int i = 0; i < totalRuns; ++i) {
-                totalTime += (int) utils::timer::timeit<std::function<void()>>(
-                        [initialData, dataSize, inputDate]() { algo::improvedBIS(initialData, dataSize, inputDate); });
-            }
-
-            double averageImprovedBISTime = ((double) totalTime) / totalRuns;
-            if (averageImprovedBISTime > improvedBIS.currentWorstTime) {
-                improvedBIS.currentWorstTime = averageImprovedBISTime;
-                improvedBIS.stockStruct = initialData[j];
-            }
-        }
-        bistime += BIS.currentWorstTime;
-        ibistime += improvedBIS.currentWorstTime;
+        allTimes[k] = (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
+            algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
+        });
     }
 
-    std::cout << "BIS" << std::endl;
-    std::cout << "Average worst time: " << bistime / totalOutsideRuns << "us" << std::endl;
+    std::sort(allTimes, allTimes + totalElements);
 
-    std::cout << "Improved BIS" << std::endl;
-    std::cout << "Average worst time: " << ibistime / totalOutsideRuns << "us" << std::endl;
+    std::cout << "n: " << totalElements << std::endl;
+    std::cout << "Time: " << allTimes[totalElements -1]  << "us" << std::endl;
+
 
     /*
     int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
@@ -298,9 +259,14 @@ void partII::exercise1() {
                              "-> exit: Quits the menu.\n"
                              "─────────────────────────────────\n";
 
+    // Read data and load it into AVL tree
+    // utils::stock::SDV_KeyDate overloads all comparison operators to work with date
+    // therefore, passing utils::stock::SDV_KeyDate as template type creates an AVL tree with date as key
     utils::csv::CSVReader reader("../data/agn.us.txt");
+    // tree object returned here is used for all operations
     auto tree = partII::loadStockDataToAVLTree<utils::stock::SDV_KeyDate>(reader);
 
+    // create basic menu for required options
     std::string input;
     std::string input2;
 
@@ -313,14 +279,11 @@ void partII::exercise1() {
 
         if (input == "exit") {
             break;
-        }
-        else if (input == "help") {
+        } else if (input == "help") {
             std::cout << HELP;
-        }
-        else if (input == "print") {
+        } else if (input == "print") {
             tree.printInOrder();
-        }
-        else if (input == "search" || input == "edit" || input == "delete") {
+        } else if (input == "search" || input == "edit" || input == "delete") {
             std::cout << "Input date (YYYY-MM-DD): ";
             std::getline(std::cin, input2);
             if (std::regex_match(input2, std::regex(utils::regex::DATE))) {
@@ -341,8 +304,7 @@ void partII::exercise1() {
                 }
                 if (input == "search") {
                     std::cout << "Volume for " << input << ": " << key->volume << std::endl;
-                }
-                else if (input == "edit"){
+                } else if (input == "edit") {
                     while (true) {
                         std::cout << "New volume: ";
                         std::getline(std::cin, input2);
@@ -354,26 +316,22 @@ void partII::exercise1() {
                             key->volume = newVolume;
                             break;
                         }
-                        catch (const std::invalid_argument& exc) {
+                        catch (const std::invalid_argument &exc) {
                             std::cout << "Expected a non-negative integer." << std::endl;
                         }
                     }
-                }
-                else if (input == "delete") {
+                } else if (input == "delete") {
                     if (tree.remove(acc)) {
                         std::cout << "Successfully deleted entry." << std::endl;
-                    }
-                    else {
+                    } else {
                         std::cout << "Entry not found." << std::endl;
                     }
                 }
-            }
-            else {
+            } else {
                 std::cout << "Invalid date. Must be YYYY-MM-DD." << std::endl;
             }
 
-        }
-        else {
+        } else {
             std::cout << "Unknown command. Type help for a list of commands." << std::endl;
         }
     }
@@ -388,6 +346,10 @@ void partII::exercise2() {
                              "-> exit: Quits the menu.\n"
                              "─────────────────────────────────\n";
 
+    // Similarly to partII::exercise1, we create an AVL tree
+    // template type is now utils::stock::SDV_KeyVolume
+    // that struct has overloaded comparison operators to work with volume
+    // therefore, this will create an AVL tree with volume as key
     utils::csv::CSVReader reader("../data/agn.us.txt");
     auto tree = partII::loadStockDataToAVLTree<utils::stock::SDV_KeyVolume>(reader);
 
@@ -402,14 +364,11 @@ void partII::exercise2() {
 
         if (input == "exit") {
             break;
-        }
-        else if (input == "help") {
+        } else if (input == "help") {
             std::cout << HELP;
-        }
-        else if (input == "print") {
+        } else if (input == "print") {
             tree.printInOrder();
-        }
-        else if (input == "max") {
+        } else if (input == "max") {
             ds::LinkedKey<utils::stock::SDV_KeyVolume> *maxKey = tree.getMaxKey();
             std::cout << "Date(s) with volume " << maxKey->key->volume << " (maximum): ";
             while (maxKey != nullptr) {
@@ -417,8 +376,7 @@ void partII::exercise2() {
                 maxKey = maxKey->next;
             }
             std::cout << std::endl;
-        }
-        else if (input == "min") {
+        } else if (input == "min") {
             ds::LinkedKey<utils::stock::SDV_KeyVolume> *minKey = tree.getMinKey();
             std::cout << "Date(s) with volume " << minKey->key->volume << " (minimum): ";
             while (minKey != nullptr) {
@@ -426,8 +384,7 @@ void partII::exercise2() {
                 minKey = minKey->next;
             }
             std::cout << std::endl;
-        }
-        else {
+        } else {
             std::cout << "Unknown command. Type help for a list of commands." << std::endl;
         }
     }
@@ -444,9 +401,12 @@ void partII::exercise3() {
                              "-> exit: Quits the menu.\n"
                              "─────────────────────────────────\n";
 
+    // Just like in partII::exercise1 and partII::exercise2, we load the data
+    // here, we create a hash table instead of an AVL tree
     utils::csv::CSVReader reader("../data/agn.us.txt");
     auto table = partII::loadStockDataToHashTable(reader);
 
+    // create menu like before
     std::string input;
     std::string input2;
 
@@ -459,14 +419,11 @@ void partII::exercise3() {
 
         if (input == "exit") {
             break;
-        }
-        else if (input == "help") {
+        } else if (input == "help") {
             std::cout << HELP;
-        }
-        else if (input == "print") {
+        } else if (input == "print") {
             table.print();
-        }
-        else if (input == "search" || input == "edit" || input == "delete") {
+        } else if (input == "search" || input == "edit" || input == "delete") {
             std::cout << "Input date (YYYY-MM-DD): ";
             std::getline(std::cin, input2);
             if (std::regex_match(input2, std::regex(utils::regex::DATE))) {
@@ -485,8 +442,7 @@ void partII::exercise3() {
                 }
                 if (input == "search") {
                     std::cout << "Volume for " << input << ": " << key->volume << std::endl;
-                }
-                else if (input == "edit"){
+                } else if (input == "edit") {
                     while (true) {
                         std::cout << "New volume: ";
                         std::getline(std::cin, input2);
@@ -498,25 +454,21 @@ void partII::exercise3() {
                             key->volume = newVolume;
                             break;
                         }
-                        catch (const std::invalid_argument& exc) {
+                        catch (const std::invalid_argument &exc) {
                             std::cout << "Expected a non-negative integer." << std::endl;
                         }
                     }
-                }
-                else if (input == "delete") {
+                } else if (input == "delete") {
                     if (table.remove(acc)) {
                         std::cout << "Successfully deleted entry." << std::endl;
-                    }
-                    else {
+                    } else {
                         std::cout << "Entry not found." << std::endl;
                     }
                 }
-            }
-            else {
+            } else {
                 std::cout << "Invalid date. Must be YYYY-MM-DD." << std::endl;
             }
-        }
-        else {
+        } else {
             std::cout << "Unknown command. Type help for a list of commands." << std::endl;
         }
     }
@@ -524,6 +476,9 @@ void partII::exercise3() {
 }
 
 void partII::run() {
+    // this function creates a basic menu, which integrates exercises 1, 2 and 3 from partII
+    // and allows the user to choose between loading the data in an AVL tree with key: date or volume,
+    // and using a hash table
     std::string input;
 
     while (true) {
@@ -539,27 +494,21 @@ void partII::run() {
 
                 if (input == "d") {
                     partII::exercise1();
-                }
-                else if (input == "v") {
+                } else if (input == "v") {
                     partII::exercise2();
-                }
-                else if (input == "back") {
+                } else if (input == "back") {
                     break;
-                }
-                else {
+                } else {
                     std::cout << "Unrecognized option. Expected D or V." << std::endl;
                     continue;
                 }
                 break;
             }
-        }
-        else if (input == "ht") {
+        } else if (input == "ht") {
             exercise3();
-        }
-        else if (input == "exit") {
+        } else if (input == "exit") {
             break;
-        }
-        else {
+        } else {
             std::cout << "Unrecognized option. Expected BST or HT." << std::endl;
             continue;
         }

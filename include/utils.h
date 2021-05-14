@@ -19,7 +19,7 @@ namespace utils {
     void swap(T &item1, T &item2);
 
     namespace string {
-        void lower(std::string& in);
+        void lower(std::string &in);
     }
 
     // Helper functions to deal with arrays.
@@ -43,28 +43,40 @@ namespace utils {
             unsigned int openInt;
         };
 
-        // Basic struct holding date string and volume int
+        /*
+         * In order to create versatile data structures, structs with overloaded operators are used to represent
+         * Date-Volume pairs. This enables us to choose which value of the pair will be used as a key in the structures.
+         */
+
+        // Basic struct holding date string and volume int. Should be pure virtual.
         struct StockDayVolume {
             std::string date;
             int volume;
-            virtual bool operator< (const StockDayVolume& other) const = 0;
-            virtual bool operator<= (const StockDayVolume& other) const = 0;
-            virtual bool operator> (const StockDayVolume& other) const = 0;
-            virtual bool operator>= (const StockDayVolume& other) const = 0;
-            virtual bool operator== (const StockDayVolume& other) const = 0;
-            virtual bool operator!= (const StockDayVolume& other) const = 0;
+
+            virtual bool operator<(const StockDayVolume &other) const = 0;
+            virtual bool operator<=(const StockDayVolume &other) const = 0;
+            virtual bool operator>(const StockDayVolume &other) const = 0;
+            virtual bool operator>=(const StockDayVolume &other) const = 0;
+            virtual bool operator==(const StockDayVolume &other) const = 0;
+            virtual bool operator!=(const StockDayVolume &other) const = 0;
         };
 
         // StockDayVolume struct using DATE as key for comparisons
         struct SDV_KeyDate : StockDayVolume {
-            inline bool operator< (const StockDayVolume& other) const {return date < other.date;}
-            inline bool operator<= (const StockDayVolume& other) const {return date <= other.date;};
-            inline bool operator> (const StockDayVolume& other) const {return date > other.date;}
-            inline bool operator>= (const StockDayVolume& other) const {return date >= other.date;}
-            inline bool operator== (const StockDayVolume& other) const {return date == other.date;}
-            inline bool operator!= (const StockDayVolume& other) const {return date != other.date;}
-            int operator% (int divisor) const;
-            inline friend std::ostream & operator<< (std::ostream &out, const struct SDV_KeyDate& s) {
+            inline bool operator<(const StockDayVolume &other) const { return date < other.date; }
+            inline bool operator<=(const StockDayVolume &other) const { return date <= other.date; };
+            inline bool operator>(const StockDayVolume &other) const { return date > other.date; }
+            inline bool operator>=(const StockDayVolume &other) const { return date >= other.date; }
+            inline bool operator==(const StockDayVolume &other) const { return date == other.date; }
+            inline bool operator!=(const StockDayVolume &other) const { return date != other.date; }
+
+            // Overloading the modulo operator is useful when using this struct in a hash table.
+            // Since the hash table uses modulo, we can determine what the hash function can be for this
+            // specific struct.
+            int operator%(int divisor) const;
+
+            /// \brief Helper method to facilitate printing.
+            inline friend std::ostream &operator<<(std::ostream &out, const struct SDV_KeyDate &s) {
                 out << s.date << " " << s.volume;
                 return out;
             }
@@ -72,13 +84,15 @@ namespace utils {
 
         // StockDayVolume struct using VOLUME as key for comparisons
         struct SDV_KeyVolume : StockDayVolume {
-            inline bool operator< (const StockDayVolume& other) const {return volume < other.volume;}
-            inline bool operator<= (const StockDayVolume& other) const {return volume <= other.volume;};
-            inline bool operator> (const StockDayVolume& other) const {return volume > other.volume;}
-            inline bool operator>= (const StockDayVolume& other) const {return volume >= other.volume;}
-            inline bool operator== (const StockDayVolume& other) const {return volume == other.volume;}
-            inline bool operator!= (const StockDayVolume& other) const {return volume != other.volume;}
-            inline friend std::ostream & operator<< (std::ostream &out, const struct SDV_KeyVolume& s) {
+            inline bool operator<(const StockDayVolume &other) const { return volume < other.volume; }
+            inline bool operator<=(const StockDayVolume &other) const { return volume <= other.volume; };
+            inline bool operator>(const StockDayVolume &other) const { return volume > other.volume; }
+            inline bool operator>=(const StockDayVolume &other) const { return volume >= other.volume; }
+            inline bool operator==(const StockDayVolume &other) const { return volume == other.volume; }
+            inline bool operator!=(const StockDayVolume &other) const { return volume != other.volume; }
+
+            /// \brief Helper method to facilitate printing.
+            inline friend std::ostream &operator<<(std::ostream &out, const struct SDV_KeyVolume &s) {
                 out << s.date << " " << s.volume;
                 return out;
             }

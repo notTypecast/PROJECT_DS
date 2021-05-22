@@ -203,11 +203,12 @@ void partI::exercise3() {
 
     std::cout << "Average interpolation search time: " << averageInterpolationSearchTime << "us" << std::endl;
 
+    std::cout << "Volume for " << inputDate << ": " << algo::binarySearch(initialData, 0, dataSize - 1, inputDate) << std::endl;
+
 }
 
 // Exercise 4 is the same as exercise 3, but it runs BIS and improved worst-case BIS instead
 void partI::exercise4() {
-    /*
     std::string inputDate;
 
     while (true) {
@@ -219,33 +220,40 @@ void partI::exercise4() {
         }
 
         std::cout << "Expected a valid date." << std::endl;
-    }*/
+    }
 
     utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
 
+    // dataset is sorted by dates (ascending) so we can perform binary search on array
+    const int totalRuns = 1000;
+    int totalTime = 0;
 
-    const int totalElements = 3000;
-    int *allTimes = new int[totalElements];
+    //binary search
+    for (int i = 0; i < totalRuns; ++i) {
+        totalTime += (int) utils::timer::timeit<std::function<void()>>(
+                [initialData, dataSize, inputDate]() { algo::binaryInterpolationSearch(initialData, dataSize, inputDate); });
+    }
 
-    for (int k = 0; k < totalElements; ++k) {
-        std::string inputDate = initialData[k].date;
+    double averageBinaryInterpolationSearchTime = ((double) totalTime) / totalRuns;
 
-        allTimes[k] = (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
-            algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
+    std::cout << "Average BIS time: " << averageBinaryInterpolationSearchTime << "us" << std::endl;
+
+    totalTime = 0;
+
+    //interpolation search
+    for (int i = 0; i < totalRuns; ++i) {
+        totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
+            algo::improvedBIS(initialData, dataSize, inputDate);
         });
     }
 
-    std::sort(allTimes, allTimes + totalElements);
+    double averageImprovedBISTime = ((double) totalTime) / totalRuns;
 
-    std::cout << "n: " << totalElements << std::endl;
-    std::cout << "Time: " << allTimes[totalElements -1]  << "us" << std::endl;
+    std::cout << "Average BIS time with improved worst-time complexity: " << averageImprovedBISTime << "us" << std::endl;
 
-
-    /*
-    int volume = algo::binaryInterpolationSearch(initialData, dataSize, inputDate);
-    std::cout << "Total volume for given date: " << volume << std::endl;*/
+    std::cout << "Volume for " << inputDate << ": " << algo::binaryInterpolationSearch(initialData, dataSize, inputDate) << std::endl;
 
 }
 

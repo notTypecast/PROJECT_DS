@@ -29,11 +29,9 @@ int main() {
             partI::exercise3();
             std::cout << "─────────────────────────────────" << std::endl;
 
-            /*
             std::cout << "Exercise 4" << std::endl << "─────────────────────────────────" << std::endl;
             partI::exercise4();
             std::cout << "─────────────────────────────────" << std::endl;
-             */
         }
         else if (input == "2") {
             partII::run();

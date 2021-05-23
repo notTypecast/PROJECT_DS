@@ -40,7 +40,6 @@ ds::LinkedKey<T>* ds::HashTable<T>::access(const T &key) {
     return current;
 }
 
-// TODO: explain why no edit method is used
 template <typename T>
 void ds::HashTable<T>::insert(const T &key) {
     // since const reference was used, first store key in heap

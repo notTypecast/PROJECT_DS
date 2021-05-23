@@ -402,10 +402,10 @@ void partII::exercise2() {
 void partII::exercise3() {
     const std::string HELP = "─────────────────────────────────\n"
                              "Available commands:\n"
-                             "-> print: Displays tree using in-order traversal.\n"
-                             "-> search: Searches tree by date and returns volume.\n"
+                             "-> print: Displays hash table.\n"
+                             "-> search: Searches hash table by date and returns volume.\n"
                              "-> edit: Edits volume for given date.\n"
-                             "-> delete: Removes tree node for given date.\n"
+                             "-> delete: Removes entry for given date.\n"
                              "-> exit: Quits the menu.\n"
                              "─────────────────────────────────\n";
 

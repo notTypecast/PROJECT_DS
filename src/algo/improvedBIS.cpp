@@ -1,24 +1,22 @@
 #include "../../include/algo.h"
-#define STD utils::date::convertStringToDays
 
-int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, const std::string &date) {
-    if (date < data[0].date || date > data[dataSize - 1].date) {
+int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, int dateTimestamp) {
+    if (dateTimestamp < data[0].dayTimestamp || dateTimestamp > data[dataSize - 1].dayTimestamp) {
         return -1;
     }
 
-    int dateTimestamp = STD(date);
     int left = 0;
     int right = (int)(dataSize - 1);
-    int next = std::ceil((long double)(dataSize - 1) * (dateTimestamp - STD(data[left].date)) / (STD(data[right].date) - STD(data[left].date)));
+    int next = std::ceil((long double)(dataSize - 1) * (dateTimestamp - data[left].dayTimestamp) / (data[right].dayTimestamp - data[left].dayTimestamp));
     int size = (int)dataSize;
 
-    while (date != data[next].date && left < right) {
+    while (dateTimestamp != data[next].dayTimestamp && left < right) {
         int i = 0;
         //linear search if range contains 3 elements or less
         if (size <= 3) {
             //try to find element in range
             for (i = 0; i < size; ++i) {
-                if (data[left + i].date == date) {
+                if (data[left + i].dayTimestamp == dateTimestamp) {
                     //return element volume if found
                     return data[left + i].volume;
                 }
@@ -28,13 +26,13 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
         }
         double sizeSqrt = std::sqrt(size);
         int currentDataIndex;
-        if (date >= data[next].date) {
+        if (dateTimestamp >= data[next].dayTimestamp) {
             while (true) {
                 currentDataIndex = (int)(next + i*sizeSqrt);
                 if (currentDataIndex >= dataSize) {
                     break;
                 }
-                if (date > data[currentDataIndex].date) {
+                if (dateTimestamp > data[currentDataIndex].dayTimestamp) {
                     // adjusting step size by multiplying by 2 every time. This ensures exponential steps.
                     i = !i ? 1 : i * 2;
                 }
@@ -52,7 +50,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
                 if (currentDataIndex < 0) {
                     break;
                 }
-                if (date < data[currentDataIndex].date) {
+                if (dateTimestamp < data[currentDataIndex].dayTimestamp) {
                     // exponential steps
                     i = !i ? 1 : i * 2;
                 }
@@ -87,7 +85,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
         while (true) {
             int middle = (int)((right + left) / 2);
 
-            if (date == data[middle].date) {
+            if (dateTimestamp == data[middle].dayTimestamp) {
                 return data[middle].volume;
             }
 
@@ -95,7 +93,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
                 break;
             }
 
-            if (date < data[middle].date) {
+            if (dateTimestamp < data[middle].dayTimestamp) {
                 right = (int)(middle - sizeSqrt);
             }
             else {
@@ -104,9 +102,9 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, co
         }
 
         size = right - left + 1;
-        next = (int)(left + std::floor((long double)size * (dateTimestamp - STD(data[left].date)) / (STD(data[right].date) - STD(data[left].date))) - 1);
+        next = (int)(left + std::floor((long double)size * (dateTimestamp - data[left].dayTimestamp) / (data[right].dayTimestamp - data[left].dayTimestamp)) - 1);
     }
-    if (date == data[next].date) {
+    if (dateTimestamp == data[next].dayTimestamp) {
         return data[next].volume;
     }
     return -1;

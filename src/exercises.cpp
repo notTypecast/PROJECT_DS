@@ -13,6 +13,7 @@ utils::stock::StockDayData *partI::loadStockData(utils::csv::CSVReader &reader) 
         if (currLine[0].empty()) break;
         // save data to struct in array
         data[index++] = {currLine[0],
+                         0,
                          std::stof(currLine[1]),
                          std::stof(currLine[2]),
                          std::stof(currLine[3]),
@@ -26,6 +27,12 @@ utils::stock::StockDayData *partI::loadStockData(utils::csv::CSVReader &reader) 
 
     return data;
 
+}
+
+void partI::calculateTimestampsForData(utils::stock::StockDayData *data, std::size_t dataSize) {
+    for (int i = 0; i < dataSize; ++i) {
+        data[i].dayTimestamp = utils::date::convertStringToDays(data[i].date);
+    }
 }
 
 ds::HashTable<utils::stock::SDV_KeyDate> partII::loadStockDataToHashTable(utils::csv::CSVReader &reader) {
@@ -84,7 +91,7 @@ void partI::exercise1(const std::string &fileName) {
          * function in its body, providing the captured variables as arguments.
          *
          */
-        totalTime += (int) utils::timer::timeit<std::function<void() >>(
+        totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::microseconds>(
                 [dataToSort, dataSize]() { algo::mergeSort(dataToSort, 0, dataSize - 1); });
     }
     // get average runtime
@@ -97,7 +104,7 @@ void partI::exercise1(const std::string &fileName) {
     // quick sort
     for (int i = 0; i < totalRuns; ++i) {
         std::copy(initialData, initialData + dataSize, dataToSort);
-        totalTime += (int) utils::timer::timeit<std::function<void() >>(
+        totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::microseconds>(
                 [dataToSort, dataSize]() { algo::quickSort(dataToSort, 0, dataSize - 1); });
     }
 
@@ -128,7 +135,7 @@ void partI::exercise2(const std::string &fileName) {
     //heap sort
     for (int i = 0; i < totalRuns; ++i) {
         std::copy(initialData, initialData + dataSize, dataToSort);
-        totalTime += (int) utils::timer::timeit<std::function<void()>>(
+        totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::microseconds>(
                 [&dataToSort, dataSize]() { algo::heapSort(&dataToSort, dataSize); });
     }
 
@@ -141,9 +148,10 @@ void partI::exercise2(const std::string &fileName) {
 
     //counting sort
     for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>([dataToSort, dataSize]() {
-            delete[] algo::countingSort(dataToSort, dataSize);
-        });
+        totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::microseconds>(
+                [dataToSort, dataSize]() {
+                    delete[] algo::countingSort(dataToSort, dataSize);
+                });
     }
 
     double averageCountingSortTime = ((double) totalTime) / totalRuns;
@@ -175,6 +183,7 @@ void partI::exercise3() {
     utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
+    partI::calculateTimestampsForData(initialData, dataSize);
 
     // dataset is sorted by dates (ascending) so we can perform binary search on array
     const int totalRuns = 1000;
@@ -182,29 +191,34 @@ void partI::exercise3() {
 
     //binary search
     for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>(
-                [initialData, dataSize, inputDate]() { algo::binarySearch(initialData, 0, dataSize - 1, inputDate); });
+        totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::nanoseconds>(
+                [initialData, dataSize, inputDate]() {
+                    algo::binarySearch(initialData, 0, dataSize - 1, inputDate);
+                });
     }
 
     double averageBinarySearchTime = ((double) totalTime) / totalRuns;
 
-    std::cout << "Average binary search time: " << averageBinarySearchTime << "us" << std::endl;
+    std::cout << "Average binary search time: " << averageBinarySearchTime << "ns" << std::endl;
 
     totalTime = 0;
-
+    int dateTimestamp = utils::date::convertStringToDays(inputDate);
     //interpolation search
     for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
-            algo::interpolationSearch(initialData, 0, dataSize - 1, inputDate);
-        });
+        totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::nanoseconds>(
+                [initialData, dataSize, dateTimestamp]() {
+                    algo::interpolationSearch(initialData, 0, dataSize - 1, dateTimestamp);
+                });
     }
 
     double averageInterpolationSearchTime = ((double) totalTime) / totalRuns;
 
-    std::cout << "Average interpolation search time: " << averageInterpolationSearchTime << "us" << std::endl;
+    std::cout << "Average interpolation search time: " << averageInterpolationSearchTime << "ns" << std::endl;
 
-    std::cout << "Volume for " << inputDate << ": " << algo::binarySearch(initialData, 0, dataSize - 1, inputDate) << std::endl;
+    std::cout << "Volume for " << inputDate << ": " << algo::binarySearch(initialData, 0, dataSize - 1, inputDate)
+              << std::endl;
 
+    delete[] initialData;
 }
 
 // Exercise 4 is the same as exercise 3, but it runs BIS and improved worst-case BIS instead
@@ -225,6 +239,9 @@ void partI::exercise4() {
     utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
+    partI::calculateTimestampsForData(initialData, dataSize);
+
+    int dateTimestamp = utils::date::convertStringToDays(inputDate);
 
     // dataset is sorted by dates (ascending) so we can perform binary search on array
     const int totalRuns = 1000;
@@ -232,29 +249,35 @@ void partI::exercise4() {
 
     //binary search
     for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>(
-                [initialData, dataSize, inputDate]() { algo::binaryInterpolationSearch(initialData, dataSize, inputDate); });
+        totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::nanoseconds>(
+                [initialData, dataSize, dateTimestamp]() {
+                    algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp);
+                });
     }
 
     double averageBinaryInterpolationSearchTime = ((double) totalTime) / totalRuns;
 
-    std::cout << "Average BIS time: " << averageBinaryInterpolationSearchTime << "us" << std::endl;
+    std::cout << "Average BIS time: " << averageBinaryInterpolationSearchTime << "ns" << std::endl;
 
     totalTime = 0;
 
     //interpolation search
     for (int i = 0; i < totalRuns; ++i) {
-        totalTime += (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, inputDate]() {
-            algo::improvedBIS(initialData, dataSize, inputDate);
-        });
+        totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::nanoseconds>(
+                [initialData, dataSize, dateTimestamp]() {
+                    algo::improvedBIS(initialData, dataSize, dateTimestamp);
+                });
     }
 
     double averageImprovedBISTime = ((double) totalTime) / totalRuns;
 
-    std::cout << "Average BIS time with improved worst-time complexity: " << averageImprovedBISTime << "us" << std::endl;
+    std::cout << "Average BIS time with improved worst-time complexity: " << averageImprovedBISTime << "ns"
+              << std::endl;
 
-    std::cout << "Volume for " << inputDate << ": " << algo::binaryInterpolationSearch(initialData, dataSize, inputDate) << std::endl;
+    std::cout << "Volume for " << inputDate << ": " << algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp)
+              << std::endl;
 
+    delete[] initialData;
 }
 
 void partII::exercise1() {

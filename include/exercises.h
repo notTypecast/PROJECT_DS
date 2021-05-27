@@ -17,6 +17,7 @@ namespace partI {
     /// an array of StockDayData structs. These arrays are then used to complete
     /// the assignments
     utils::stock::StockDayData *loadStockData(utils::csv::CSVReader &reader);
+    void calculateTimestampsForData(utils::stock::StockDayData *data, std::size_t dataSize);
 
     /*
      * Each function below corresponds to an exercise.

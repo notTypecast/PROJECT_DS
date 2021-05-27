@@ -54,23 +54,23 @@ namespace algo {
     /// \param data Pointer to array of StockDayData structs.
     /// \param left Left index in array.
     /// \param right Right index in array.
-    /// \param date Date to search for.
+    /// \param dateTimestamp dayTimestamp of given date.
     /// \returns total volume corresponding to given date, -1 if not found.
-    int interpolationSearch(utils::stock::StockDayData *data, int left, int right, const std::string &date);
+    int interpolationSearch(utils::stock::StockDayData *data, int left, int right, int dateTimestamp);
 
     /// \brief Implementation of the BIS algorithm.
     /// \param data Pointer to array of StockDayData structs.
     /// \param dataSize Size of array.
-    /// \param date Date to search for.
+    /// \param dateTimestamp Day timestamp of date to search for.
     /// \returns total volume corresponding to given date, -1 if not found.
-    int binaryInterpolationSearch(utils::stock::StockDayData *data, std::size_t dataSize, const std::string &date);
+    int binaryInterpolationSearch(utils::stock::StockDayData *data, std::size_t dataSize, int dateTimestamp);
 
     /// \brief Implementation of the BIS algorithm, with improved worst case complexity.
     /// \param data Pointer to array of StockDayData structs.
     /// \param dataSize Size of array.
-    /// \param date Date to search for.
+    /// \param dateTimestamp Day timestamp of date to search for.
     /// \returns total volume corresponding to given date, -1 if not found.
-    int improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, const std::string &date);
+    int improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, int dateTimestamp);
 
 
 }

@@ -35,6 +35,7 @@ namespace utils {
         // This struct is used to hold stock data for a single day.
         struct StockDayData {
             std::string date;
+            int dayTimestamp;
             float open;
             float high;
             float low;
@@ -147,8 +148,8 @@ namespace utils {
     namespace timer {
         /// \brief Times execution of a function.
         /// \param funcToTime Function to time.
-        /// \returns Time in microseconds.
-        template<typename F>
+        /// \returns Time measured in specified typename T.
+        template<typename F, typename T>
         std::time_t timeit(F funcToTime);
     }
 

@@ -1,11 +1,8 @@
 #include <iostream>
 #include "../include/utils.h"
 #include "../include/exercises.h"
-#include "../include/algo.h"
-#include "../include/ds.h"
 
 int main() {
-    /*
     std::string input;
 
     while (true) {
@@ -43,36 +40,6 @@ int main() {
         }
         break;
     }
-    */
-    std::string element = "2009-08-05";
-    /*
-    utils::csv::CSVReader reader("../data/agn.us.txt");
-    int dataSize = (int) reader.getTotalRows() - 2;
-    utils::stock::StockDayData *initialData = partI::loadStockData(reader);
-    std::cout << (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, element]() {
-        algo::binarySearch(initialData, 0, dataSize - 1, element);
-    }) << std::endl;
-    std::cout << (int) utils::timer::timeit<std::function<void()>>([initialData, dataSize, element]() {
-        algo::interpolationSearch(initialData, 0, dataSize - 1, element);
-    }) << std::endl;
-
-    delete[] initialData;*/
-    partI::exercise4();
-    /*
-    std::cout << (int) utils::timer::timeit<std::function<void()>>([element]() {
-        std::string test = "2005";
-
-        int current = 0;
-        int str_size = (int) test.length();
-        for (int i = 0; i < str_size; ++i) {
-            current += (test.at(i) - 48) * (int) pow(10, str_size - 1 - i);
-        }
-        //std::cout << current << std::endl;
-
-        //int date = std::stoi("2005");
-
-    }) << std::endl;
-     */
 
     return 0;
 }

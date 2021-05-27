@@ -4,7 +4,7 @@
 // this is because HeapSort sorts by close value
 
 // Constructor 1
-ds::StockHeap::StockHeap(std::size_t maxSize) : createdArray(true), internalArray(new utils::stock::StockDayData[maxSize]), currentSize(0), maxSize(maxSize) {};
+ds::StockHeap::StockHeap(std::size_t maxSize) : createdArray(true), internalArray(new utils::stock::StockDayData[maxSize]), currentSize(0), maxSize(maxSize) {}
 
 // Constructor 2
 ds::StockHeap::StockHeap(utils::stock::StockDayData** array, std::size_t size, std::size_t maxSize) : createdArray(false), internalArray(new utils::stock::StockDayData[maxSize]), currentSize(0), maxSize(maxSize) {
@@ -24,7 +24,7 @@ ds::StockHeap::StockHeap(utils::stock::StockDayData** array, std::size_t size, s
     // this is also why double pointer is required
     delete[] *array;
     *array = internalArray;
-};
+}
 
 // Destructor
 ds::StockHeap::~StockHeap() {

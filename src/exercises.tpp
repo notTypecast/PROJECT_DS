@@ -4,7 +4,6 @@ ds::AVLTree<T> partII::loadStockDataToAVLTree(utils::csv::CSVReader &reader) {
     ds::AVLTree<T> tree;
 
     std::string *currLine;
-    int index = 0;
     while (true) {
         // read new line from file
         currLine = reader.getrow();

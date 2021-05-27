@@ -22,15 +22,6 @@ namespace utils {
         void lower(std::string &in);
     }
 
-    // Helper functions to deal with arrays.
-    namespace array {
-        template<typename T>
-        bool compare(const T arr1[], std::size_t arr1Size, const T arr2[], std::size_t arr2Size);
-
-        template<typename T>
-        T *duplicate(const T arr[], std::size_t arrSize);
-    }
-
     namespace stock {
         // This struct is used to hold stock data for a single day.
         struct StockDayData {
@@ -98,9 +89,6 @@ namespace utils {
                 return out;
             }
         };
-
-        void printStockStruct(const StockDayData &data);
-
     }
 
 
@@ -163,7 +151,6 @@ namespace utils {
 // including tpp files, since non-specialized template implementations
 // need to be in the same file as their declarations.
 // using .tpp extension to distinguish source files containing template implementations.
-#include "../src/utils/array.tpp"
 #include "../src/utils/utils.tpp"
 #include "../src/utils/timer.tpp"
 

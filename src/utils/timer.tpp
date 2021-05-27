@@ -1,6 +1,6 @@
-/* Accepts lambda function F
- * Runs function and times it, then returns the time (in microseconds)
- */
+/* Accepts lambda function F, time unit T
+* Runs function and times it, then returns the time
+*/
 template <typename F, typename T>
 std::time_t utils::timer::timeit(F funcToTime) {
     // start timer

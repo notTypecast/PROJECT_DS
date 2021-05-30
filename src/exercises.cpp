@@ -237,7 +237,7 @@ void partI::exercise4() {
         std::cout << "Expected a valid date." << std::endl;
     }*/
 
-    utils::csv::CSVReader reader("../data/agn.us.txt");
+    utils::csv::CSVReader reader("../data/gumbel.rnd.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
     partI::calculateTimestampsForData(initialData, dataSize);
@@ -297,7 +297,7 @@ void partI::exercise4() {
 
             // binary interpolation search
             currTime = (int) utils::timer::timeit<std::function<void()>, std::chrono::nanoseconds>([initialData, dataSize, dateTimestamp]() {
-                std::cout << (algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp) == -1);
+                algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp);
             });
 
             worstBIStime = std::max(currTime, worstBIStime);

@@ -223,6 +223,7 @@ void partI::exercise3() {
 
 // Exercise 4 is the same as exercise 3, but it runs BIS and improved worst-case BIS instead
 void partI::exercise4() {
+    /*
     std::string inputDate;
 
     while (true) {
@@ -234,13 +235,14 @@ void partI::exercise4() {
         }
 
         std::cout << "Expected a valid date." << std::endl;
-    }
+    }*/
 
     utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
     partI::calculateTimestampsForData(initialData, dataSize);
 
+    /*
     int dateTimestamp = utils::date::convertStringToDays(inputDate);
 
     // dataset is sorted by dates (ascending) so we can perform binary search on array
@@ -275,7 +277,78 @@ void partI::exercise4() {
               << std::endl;
 
     std::cout << "Volume for " << inputDate << ": " << algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp)
-              << std::endl;
+              << std::endl;*/
+
+    // Total times to go through dataset
+    const int totalOutsideRuns = 100;
+    // Arrays to save worst times for BIS and IBIS
+    int *BIStimes = new int[totalOutsideRuns];
+    int *IBIStimes = new int[totalOutsideRuns];
+    int currTime, worstBIStime, worstIBIStime;
+
+    // Repeat set amount of times
+    for (int k = 0; k < totalOutsideRuns; ++k) {
+        worstBIStime = 0;
+        worstIBIStime = 0;
+
+        // Go through dataset and calculate worst time for each algorithm
+        for (int j = 0; j < (int) dataSize; ++j) {
+            int dateTimestamp = initialData[j].dayTimestamp;
+
+            // binary interpolation search
+            currTime = (int) utils::timer::timeit<std::function<void()>, std::chrono::nanoseconds>([initialData, dataSize, dateTimestamp]() {
+                std::cout << (algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp) == -1);
+            });
+
+            worstBIStime = std::max(currTime, worstBIStime);
+
+            // improved BIS
+            currTime = (int) utils::timer::timeit<std::function<void()>, std::chrono::nanoseconds>([initialData, dataSize, dateTimestamp]() { algo::improvedBIS(initialData, dataSize, dateTimestamp); });
+
+            worstIBIStime = std::max(currTime, worstIBIStime);
+        }
+        BIStimes[k] = worstBIStime;
+        IBIStimes[k] = worstIBIStime;
+    }
+    // Calculate standard variation for each algorithm
+    double BISstd_var = 0, IBISstd_var = 0;
+
+    std::sort(BIStimes, BIStimes + totalOutsideRuns);
+    std::sort(IBIStimes, IBIStimes + totalOutsideRuns);
+
+    double BISmean = BIStimes[(int)(totalOutsideRuns / 2)];
+    double IBISmean = IBIStimes[(int)(totalOutsideRuns / 2)];
+
+
+    for (int k = 0; k < totalOutsideRuns; ++k) {
+        BISstd_var += pow(BIStimes[k] - BISmean, 2);
+        IBISstd_var += pow(IBIStimes[k] - IBISmean, 2);
+    }
+    BISstd_var /= totalOutsideRuns;
+    BISstd_var = sqrt(BISstd_var);
+    IBISstd_var /= totalOutsideRuns;
+    BISstd_var = sqrt(IBISstd_var);
+
+    int BIStotal = 0, IBIStotal = 0;
+    int BISw_avrg = 0, IBISw_avrg = 0;
+    for (int k = 0; k < totalOutsideRuns; ++k) {
+        if (BIStimes[k] > BISmean - 3*BISstd_var && BIStimes[k] < BISmean + 3*BISstd_var) {
+            BISw_avrg += BIStimes[k];
+            ++BIStotal;
+        }
+        if (IBIStimes[k] > IBISmean - 3*IBISstd_var && IBIStimes[k] < IBISmean + 3*IBISstd_var) {
+            IBISw_avrg += IBIStimes[k];
+            ++IBIStotal;
+        }
+    }
+    BISw_avrg /= BIStotal;
+    IBISw_avrg /= IBIStotal;
+
+    std::cout << "Average worst-case time for BIS: " << BISw_avrg << "ns" << std::endl;
+    std::cout << "Average worst-case time for improved BIS: " << IBISw_avrg << "ns" << std::endl;
+
+    delete[] BIStimes;
+    delete[] IBIStimes;
 
     delete[] initialData;
 }

@@ -10,8 +10,8 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, in
     int next = std::ceil((long double)(dataSize - 1) * (dateTimestamp - data[left].dayTimestamp) / (data[right].dayTimestamp - data[left].dayTimestamp));
     int size = (int)dataSize;
 
-    while (dateTimestamp != data[next].dayTimestamp && left < right) {
-        int i = 0;
+    while (left < right && dateTimestamp != data[next].dayTimestamp) {
+        int i = 1;
         //linear search if range contains 3 elements or less
         if (size <= 3) {
             //try to find element in range
@@ -26,7 +26,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, in
         }
         double sizeSqrt = std::sqrt(size);
         int currentDataIndex;
-        if (dateTimestamp >= data[next].dayTimestamp) {
+        if (dateTimestamp > data[next].dayTimestamp) {
             while (true) {
                 currentDataIndex = (int)(next + i*sizeSqrt);
                 if (currentDataIndex >= dataSize) {
@@ -34,7 +34,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, in
                 }
                 if (dateTimestamp > data[currentDataIndex].dayTimestamp) {
                     // adjusting step size by multiplying by 2 every time. This ensures exponential steps.
-                    i = !i ? 1 : i * 2;
+                    i *= 2;
                 }
                 else {
                     break;
@@ -42,7 +42,7 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, in
             }
             // located the range using exponential steps
             right = (int)(next + i*sizeSqrt);
-            left = (int)(next + ((double)i/2)*sizeSqrt);
+            left = (int)(next + std::floor(((float)i)/2)*sizeSqrt);
         }
         else {
             while (true) {
@@ -52,13 +52,13 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, in
                 }
                 if (dateTimestamp < data[currentDataIndex].dayTimestamp) {
                     // exponential steps
-                    i = !i ? 1 : i * 2;
+                    i *= 2;
                 }
                 else {
                     break;
                 }
             }
-            right = (int)(next - ((double)i/2)*sizeSqrt);
+            right = (int)(next - std::floor( ((float)i)/2)*sizeSqrt);
             left = (int)(next - i*sizeSqrt);
         }
         // if new right and left positions exceed bounds, setting them
@@ -69,6 +69,9 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, in
         if (left < 0) {
             left = 0;
         }
+
+        size = right - left + 1;
+        sizeSqrt = std::sqrt(size);
 
         /*
          * By now, we have an approximate position of the desired element between the
@@ -83,13 +86,13 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, in
          * This could be done with a simple linear search, but a binary search is more efficient.
          */
         while (true) {
-            int middle = (int)((right + left) / 2);
+            int middle = (int)(left + std::floor(std::floor((right - left)/sizeSqrt)/2)*sizeSqrt);
 
             if (dateTimestamp == data[middle].dayTimestamp) {
                 return data[middle].volume;
             }
 
-            if (middle + sizeSqrt >= right || middle - sizeSqrt <= left) {
+            if ((int)(middle + sizeSqrt) >= right || (int)(middle - sizeSqrt) <= left) {
                 break;
             }
 
@@ -102,7 +105,13 @@ int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, in
         }
 
         size = right - left + 1;
-        next = (int)(left + std::floor((long double)size * (dateTimestamp - data[left].dayTimestamp) / (data[right].dayTimestamp - data[left].dayTimestamp)) - 1);
+        next = (int)(left + std::ceil((long double)(size - 1) * (dateTimestamp - data[left].dayTimestamp) / (data[right].dayTimestamp - data[left].dayTimestamp)));
+    }
+    if (left == right) {
+        if (dateTimestamp == data[left].dayTimestamp) {
+            return data[left].volume;
+        }
+        return -1;
     }
     if (dateTimestamp == data[next].dayTimestamp) {
         return data[next].volume;

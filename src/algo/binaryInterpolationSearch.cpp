@@ -73,7 +73,7 @@ int algo::binaryInterpolationSearch(utils::stock::StockDayData *data, std::size_
         }
         // calculating new size and next prediction
         size = right - left + 1;
-        next = (int) (left + std::floor((long double) size * (dateTimestamp - data[left].dayTimestamp) / (data[right].dayTimestamp - data[left].dayTimestamp)) - 1);
+        next = (int) (left + std::floor((long double) (size - 1) * (dateTimestamp - data[left].dayTimestamp) / (data[right].dayTimestamp - data[left].dayTimestamp)));
     }
     if (dateTimestamp == data[next].dayTimestamp) {
         return data[next].volume;

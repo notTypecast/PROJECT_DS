@@ -1,6 +1,7 @@
 #include "../../include/algo.h"
 
 int algo::improvedBIS(utils::stock::StockDayData *data, std::size_t dataSize, int dateTimestamp) {
+    std::cout << dateTimestamp << std::endl;
     if (dateTimestamp < data[0].dayTimestamp || dateTimestamp > data[dataSize - 1].dayTimestamp) {
         return -1;
     }

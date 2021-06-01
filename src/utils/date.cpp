@@ -10,7 +10,7 @@ std::time_t utils::date::convertStringToTimestamp(const std::string &dateStr) {
     int day = stoi(dateStr.substr(8));
 
     // get total years passed since 1970
-    int totalYears = year - 1970;
+    time_t totalYears = year - 1970;
     // convert to seconds
     time_t dateTimestamp = totalYears * utils::date::YEARTOSECONDS;
 

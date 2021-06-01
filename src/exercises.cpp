@@ -180,7 +180,7 @@ void partI::exercise3() {
         std::cout << "Expected a valid date." << std::endl;
     }
 
-    utils::csv::CSVReader reader("../data/agn.us.txt");
+    utils::csv::CSVReader reader("../data/dts.rnd.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
     partI::calculateTimestampsForData(initialData, dataSize);
@@ -237,7 +237,7 @@ void partI::exercise4() {
         std::cout << "Expected a valid date." << std::endl;
     }*/
 
-    utils::csv::CSVReader reader("../data/gumbel.rnd.txt");
+    utils::csv::CSVReader reader("../data/dts.rnd.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
     partI::calculateTimestampsForData(initialData, dataSize);
@@ -300,10 +300,14 @@ void partI::exercise4() {
                 algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp);
             });
 
+            currTime = currTime < 1500 ? currTime : 0;
+
             worstBIStime = std::max(currTime, worstBIStime);
 
             // improved BIS
             currTime = (int) utils::timer::timeit<std::function<void()>, std::chrono::nanoseconds>([initialData, dataSize, dateTimestamp]() { algo::improvedBIS(initialData, dataSize, dateTimestamp); });
+
+            currTime = currTime < 1500 ? currTime : 0;
 
             worstIBIStime = std::max(currTime, worstIBIStime);
         }
@@ -343,6 +347,15 @@ void partI::exercise4() {
     }
     BISw_avrg /= BIStotal;
     IBISw_avrg /= IBIStotal;
+
+    for (int k = 0; k < totalOutsideRuns; ++k) {
+        std::cout << BIStimes[k] << " ";
+    }
+    std::cout << std::endl;
+    for (int k = 0; k < totalOutsideRuns; ++k) {
+        std::cout << IBIStimes[k] << " ";
+    }
+    std::cout << std::endl;
 
     std::cout << "Average worst-case time for BIS: " << BISw_avrg << "ns" << std::endl;
     std::cout << "Average worst-case time for improved BIS: " << IBISw_avrg << "ns" << std::endl;

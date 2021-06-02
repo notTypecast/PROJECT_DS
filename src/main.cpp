@@ -3,7 +3,6 @@
 #include "../include/exercises.h"
 
 int main() {
-    /*
     std::string input;
 
     while (true) {
@@ -41,7 +40,5 @@ int main() {
         }
         break;
     }
-    */
-    partI::exercise4();
     return 0;
 }

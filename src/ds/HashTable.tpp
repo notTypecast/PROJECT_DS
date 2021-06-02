@@ -52,19 +52,9 @@ void ds::HashTable<T>::insert(const T &key) {
         internalArray[index].key = keyInHeap;
         return;
     }
-    // else, go to end of chain and store key there
-    LinkedKey<T> *current = &internalArray[index];
-    while (current->next != nullptr) {
-        // if key exists, overwrite
-        if (*current->key == key) {
-            delete current->key;
-            current->key = keyInHeap;
-            return;
-        }
-        current = current->next;
-    }
-    // since chain is created using LinkedKey objects, new LinkedKey object needs to be created for this key
-    current->next = new LinkedKey<T>(keyInHeap, nullptr);
+    // else, place new key at beginning of chain
+    LinkedKey<T> *newKey = new LinkedKey<T>(keyInHeap, internalArray[index].next == nullptr ? nullptr : internalArray[index].next);
+    internalArray[index].next = newKey;
 }
 
 template <typename T>

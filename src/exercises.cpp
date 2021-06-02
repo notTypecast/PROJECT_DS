@@ -180,7 +180,7 @@ void partI::exercise3() {
         std::cout << "Expected a valid date." << std::endl;
     }
 
-    utils::csv::CSVReader reader("../data/dts.rnd.txt");
+    utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
     partI::calculateTimestampsForData(initialData, dataSize);
@@ -236,7 +236,7 @@ void partI::exercise4() {
         std::cout << "Expected a valid date." << std::endl;
     }
 
-    utils::csv::CSVReader reader("../data/gumbel.rnd.txt");
+    utils::csv::CSVReader reader("../data/agn.us.txt");
     int dataSize = (int) reader.getTotalRows() - 2;
     utils::stock::StockDayData *initialData = partI::loadStockData(reader);
     partI::calculateTimestampsForData(initialData, dataSize);

@@ -202,7 +202,7 @@ namespace ds {
 
     private:
         const unsigned int M;
-        LinkedKey<T> *internalArray;
+        LinkedKey<T> **internalArray;
 
     };
 

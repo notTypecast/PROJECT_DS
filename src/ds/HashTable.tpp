@@ -1,5 +1,5 @@
 template <typename T>
-ds::HashTable<T>::HashTable(unsigned int M) : M(M), internalArray(new LinkedKey<T>[M]) {}
+ds::HashTable<T>::HashTable(unsigned int M) : M(M), internalArray(new LinkedKey<T>*[M]) {}
 
 template <typename T>
 ds::HashTable<T>::~HashTable() {
@@ -8,7 +8,7 @@ ds::HashTable<T>::~HashTable() {
     // object instantiation
     LinkedKey<T> *current;
     for (int i = 0; i < M; ++i) {
-        current = &internalArray[i];
+        current = internalArray[i];
         while (current != nullptr) {
             if (current->key != nullptr) {
                 delete current->key;
@@ -27,12 +27,12 @@ ds::LinkedKey<T>* ds::HashTable<T>::access(const T &key) {
     // get index of item to be accessed in array
     // since this hash table uses mod, key % M (where M is the size of internalArray) determines index of item
     int index = key % M;
-    // if key at index is nullptr, item does not exist in hash table
-    if (internalArray[index].key == nullptr) {
+    // if index is nullptr, item does not exist in hash table
+    if (internalArray[index] == nullptr) {
         return nullptr;
     }
-    // if key at index isn't nullptr, search for key in current chain
-    LinkedKey<T> *current = &internalArray[index];
+    // if index isn't nullptr, search for key in current chain
+    LinkedKey<T> *current = internalArray[index];
     while (current != nullptr && *current->key != key) {
         current = current->next;
     }
@@ -46,15 +46,16 @@ void ds::HashTable<T>::insert(const T &key) {
     T* keyInHeap = new T(key);
     // get index
     int index = key % M;
-    // if internalArray is empty at that index, store this key and return
-    if (internalArray[index].key == nullptr) {
-        // creation of new LinkedKey object isn't necessary, since array already contains created object here
-        internalArray[index].key = keyInHeap;
+    // if chain is empty, place at start
+    LinkedKey<T> *newKey = new LinkedKey<T>(keyInHeap, nullptr);
+    if (internalArray[index] == nullptr) {
+        internalArray[index] = newKey;
         return;
     }
-    // else, place new key at beginning of chain
-    LinkedKey<T> *newKey = new LinkedKey<T>(keyInHeap, internalArray[index].next == nullptr ? nullptr : internalArray[index].next);
-    internalArray[index].next = newKey;
+    // if chain isn't empty, place at start and connect previous first element to it
+    LinkedKey<T> *previous = internalArray[index];
+    internalArray[index] = newKey;
+    newKey->next = previous;
 }
 
 template <typename T>
@@ -62,31 +63,11 @@ bool ds::HashTable<T>::remove(const T &key) {
     // get index
     int index = key % M;
     // if index has no key, cannot remove
-    if (internalArray[index].key == nullptr) {
+    if (internalArray[index] == nullptr) {
         return false;
     }
-    // if key to be removed is at that index
-    else if (*internalArray[index].key == key) {
-        // delete the key and set LinkedKey object's key value to nullptr
-        delete internalArray[index].key;
-        internalArray[index].key = nullptr;
-        // if there is next LinkedKey object linked to this one, its values must be moved to this one
-        // this is because this LinkedKey object is part of internalArray and cannot be deleted/overwritten
-        if (internalArray[index].next != nullptr) {
-            // set this LinkedKey's key to be equal to the next one's key
-            internalArray[index].key = internalArray[index].next->key;
-            // set this LinkedKey's next to be equal to the LinkedKey object linked to the next LinkedKey object
-            LinkedKey<T> *toDelete = internalArray[index].next;
-            internalArray[index].next = internalArray[index].next->next;
-            // delete the next LinkedKey object whose values were copied to this one safely (without chain deleting)
-            ds::safeDeleteLinkedKey(toDelete);
-        }
-        return true;
-    }
-
-    // if first LinkedKey object does not contain the same key, we must search the chain
     // create new LinkedKey, link to beginning of chain
-    LinkedKey<T> *initial = new LinkedKey<T>(nullptr, &internalArray[index]);
+    LinkedKey<T> *initial = new LinkedKey<T>(nullptr, internalArray[index]);
     LinkedKey<T> *current = initial;
 
     // look at next LinkedKey's key to see if it's the one to be deleted
@@ -94,7 +75,7 @@ bool ds::HashTable<T>::remove(const T &key) {
     // therefore skipping the next LinkedKey (whose key is the one to be removed)
     // this is also the reason a new LinkedKey is created at the beginning of the chain; the first time we look, we will
     // look at that LinkedKey object's next, which will be the first LinkedKey object
-    while (*current->next->key != key) {
+    while (*(current->next->key) != key) {
         current = current->next;
         // if end of chain was reached without finding
         if (current->next == nullptr) {
@@ -109,9 +90,14 @@ bool ds::HashTable<T>::remove(const T &key) {
     current->next = current->next->next;
     // delete the next one's key
     delete toDelete->key;
+    // if LinkedKey to be deleted is first in chain, connect to next
+    if (toDelete == internalArray[index]) {
+        internalArray[index] = internalArray[index]->next;
+    }
     // finally, safe delete (no chain-deleting) the next LinkedKey object, as well as the initial one created above
     ds::safeDeleteLinkedKey(toDelete);
     ds::safeDeleteLinkedKey(initial);
+
     return true;
 }
 
@@ -120,12 +106,12 @@ void ds::HashTable<T>::print() {
     // print each LinkedKey object's key that isn't null, as well as the chain it's connected to
     LinkedKey<T> *current;
     for (int i = 0; i < M; ++i) {
-        current = &internalArray[i];
-        if (current->key == nullptr) {
+        current = internalArray[i];
+        if (current == nullptr) {
             continue;
         }
         while (true) {
-            std::cout << *current->key;
+            std::cout << *(current->key);
             if (current->next == nullptr) {
                 break;
             }

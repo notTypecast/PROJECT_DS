@@ -86,14 +86,16 @@ bool ds::HashTable<T>::remove(const T &key) {
     }
     // key was found, so mark the next one as the one to be deleted
     LinkedKey<T> *toDelete = current->next;
-    // link current one to next's next
-    current->next = current->next->next;
-    // delete the next one's key
-    delete toDelete->key;
     // if LinkedKey to be deleted is first in chain, connect to next
-    if (toDelete == internalArray[index]) {
+    if (current == initial) {
         internalArray[index] = internalArray[index]->next;
     }
+    // link current one to next's next
+    else {
+        current->next = current->next->next;
+    }
+    // delete the next one's key
+    delete toDelete->key;
     // finally, safe delete (no chain-deleting) the next LinkedKey object, as well as the initial one created above
     ds::safeDeleteLinkedKey(toDelete);
     ds::safeDeleteLinkedKey(initial);

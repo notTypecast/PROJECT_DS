@@ -13,8 +13,6 @@
 #include <algorithm>
 
 namespace utils {
-
-    // Simple swap helper function.
     template<typename T>
     void swap(T &item1, T &item2);
 

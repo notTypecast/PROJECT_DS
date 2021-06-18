@@ -4,18 +4,30 @@ int algo::partition(utils::stock::StockDayData* data, int left, int right) {
     // using the right-most element as pivot
     int pivotIndex = (left + right) / 2;
     utils::stock::StockDayData pivot = data[pivotIndex];
-    int index = left - 1;
+    int i = left, j = right;
 
-    for (int j = left; j < right; ++j) {
-        // if open values are equal, dates are checked to ensure the sorting is stable
-        if (data[j].open < pivot.open || (data[j].open == pivot.open && data[j].date < pivot.date)) {
-            utils::swap<utils::stock::StockDayData>(data[++index], data[j]);
+    while (true) {
+        while (i < right && data[i].open <= pivot.open) {
+            ++i;
         }
+        while (j > left && data[j].open >= pivot.open) {
+            --j;
+        }
+        if (i >= j) {
+            break;
+        }
+        utils::swap<utils::stock::StockDayData>(data[i], data[j]);
     }
 
-    utils::swap<utils::stock::StockDayData>(data[++index], data[pivotIndex]);
-
-    return index;
+    // Checking positions to swap appropriately, since mid is used as pivot
+    if (pivotIndex > i) {
+        utils::swap<utils::stock::StockDayData>(data[pivotIndex], data[i]);
+        return i;
+    }
+    else {
+        utils::swap<utils::stock::StockDayData>(data[pivotIndex], data[j]);
+        return j;
+    }
 }
 
 void algo::quickSort(utils::stock::StockDayData* data, int left, int right) {

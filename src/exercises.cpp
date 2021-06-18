@@ -114,7 +114,9 @@ void partI::exercise1(const std::string &fileName) {
     for (int i = 0; i < totalRuns; ++i) {
         std::copy(initialData, initialData + dataSize, dataToSort);
         totalTime += (int) utils::timer::timeit<std::function<void()>, std::chrono::microseconds>(
-                [dataToSort, dataSize]() { algo::quickSort(dataToSort, 0, dataSize - 1); });
+                [dataToSort, dataSize]() { algo::quickSort(dataToSort, 0, dataSize - 1);
+
+                });
     }
 
     double averageQuickSortTime = ((double) totalTime) / totalRuns;

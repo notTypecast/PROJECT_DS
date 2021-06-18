@@ -7,16 +7,14 @@ int algo::partition(utils::stock::StockDayData* data, int left, int right) {
     int i = left, j = right;
 
     // moving pivot to left-most position to facilitate final swap without multiple checks
-    if (pivotIndex != left) {
-        utils::swap<utils::stock::StockDayData>(data[pivotIndex], data[left]);
-        pivotIndex = left;
-    }
+    utils::swap<utils::stock::StockDayData>(data[pivotIndex], data[left]);
+    pivotIndex = left;
 
     while (true) {
-        while (i < right && data[i].open <= pivot.open) {
+        while (i < right && ((data[i].open < pivot.open) || (data[i].open == pivot.open && data[i].date <= pivot.date))) {
             ++i;
         }
-        while (j > left && data[j].open >= pivot.open) {
+        while (j > left && ((data[j].open > pivot.open) || (data[j].open == pivot.open && data[j].date >= pivot.date))) {
             --j;
         }
         if (i >= j) {
@@ -25,8 +23,6 @@ int algo::partition(utils::stock::StockDayData* data, int left, int right) {
         }
         utils::swap<utils::stock::StockDayData>(data[i], data[j]);
     }
-
-
 
 }
 

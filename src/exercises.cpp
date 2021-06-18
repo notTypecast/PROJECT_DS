@@ -57,12 +57,12 @@ ds::HashTable<utils::stock::SDV_KeyDate> partII::loadStockDataToHashTable(utils:
     return table;
 }
 bool isSorted(utils::stock::StockDayData* data, int len) {
-    float currentlyAt = data[0].open;
+    float currentlyAt = data[0].close;
     for (int i = 1; i < len; ++i) {
-        if (data[i].open < currentlyAt) {
+        if (data[i].close < currentlyAt) {
             return false;
         }
-        currentlyAt = data[i].open;
+        currentlyAt = data[i].close;
     }
     return true;
 }

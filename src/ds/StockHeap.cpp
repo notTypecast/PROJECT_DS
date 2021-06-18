@@ -56,7 +56,7 @@ void ds::StockHeap::heapifyUp(int index) {
     }
     int parentIndex = getParent(index);
     // if value of this element is larger than value of parent, swap them and heapify up again (for new index of this element, which is parent index)
-    if (internalArray[index].close > internalArray[parentIndex].close) {
+    if (internalArray[index].close > internalArray[parentIndex].close || internalArray[index].close == internalArray[parentIndex].close && internalArray[index].date > internalArray[parentIndex].date) {
         utils::swap<utils::stock::StockDayData>(internalArray[index], internalArray[parentIndex]);
         heapifyUp(parentIndex);
     }
@@ -71,19 +71,25 @@ void ds::StockHeap::heapifyDown(int index) {
     if (rightChildIndex >= currentSize) {
         // if there is a left child and its value is larger than this element's, swap them
         // no further heapify down is necessary, because since there was no right child, the left child had no children
-        if (leftChildIndex < currentSize && internalArray[index].close < internalArray[leftChildIndex].close) {
+        if (leftChildIndex < currentSize && (internalArray[index].close < internalArray[leftChildIndex].close || internalArray[index].close == internalArray[leftChildIndex].close && internalArray[index].date < internalArray[leftChildIndex].date)) {
             utils::swap(internalArray[index], internalArray[leftChildIndex]);
         }
         return;
     }
 
     // if children's values are smaller than this element's, stop
-    if (internalArray[index].close >= internalArray[leftChildIndex].close && internalArray[index].close >= internalArray[rightChildIndex].close) {
+    if ((internalArray[index].close > internalArray[leftChildIndex].close || internalArray[index].close == internalArray[leftChildIndex].close && internalArray[index].date > internalArray[leftChildIndex].date) && (internalArray[index].close > internalArray[rightChildIndex].close || internalArray[index].close == internalArray[rightChildIndex].close && internalArray[index].date > internalArray[rightChildIndex].date)) {
         return;
     }
 
     // swap this element with the child with the largest value
-    int indexOfMax = internalArray[leftChildIndex].close > internalArray[rightChildIndex].close ? leftChildIndex : rightChildIndex;
+    int indexOfMax;
+    if (internalArray[leftChildIndex].close == internalArray[rightChildIndex].close) {
+        indexOfMax = internalArray[leftChildIndex].date > internalArray[rightChildIndex].date ? leftChildIndex : rightChildIndex;
+    }
+    else {
+        indexOfMax = internalArray[leftChildIndex].close > internalArray[rightChildIndex].close ? leftChildIndex : rightChildIndex;
+    }
     utils::swap(internalArray[index], internalArray[indexOfMax]);
 
     // call heapifyDown for this element again

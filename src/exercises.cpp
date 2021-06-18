@@ -56,7 +56,16 @@ ds::HashTable<utils::stock::SDV_KeyDate> partII::loadStockDataToHashTable(utils:
 
     return table;
 }
-
+bool isSorted(utils::stock::StockDayData* data, int len) {
+    float currentlyAt = data[0].open;
+    for (int i = 1; i < len; ++i) {
+        if (data[i].open < currentlyAt) {
+            return false;
+        }
+        currentlyAt = data[i].open;
+    }
+    return true;
+}
 void partI::exercise1(const std::string &fileName) {
     std::cout << "Running for file: " << fileName << std::endl;
 

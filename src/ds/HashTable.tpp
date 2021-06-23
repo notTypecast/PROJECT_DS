@@ -113,7 +113,7 @@ void ds::HashTable<T>::print() {
             continue;
         }
         while (true) {
-            std::cout << *(current->key);
+            std::cout << *current->key;
             if (current->next == nullptr) {
                 break;
             }

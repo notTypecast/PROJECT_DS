@@ -36,7 +36,6 @@ void partI::calculateTimestampsForData(utils::stock::StockDayData *data, std::si
 }
 
 ds::HashTable<utils::stock::SDV_KeyDate> partII::loadStockDataToHashTable(utils::csv::CSVReader &reader) {
-    // TODO: explain why 27 is the optimal M
     ds::HashTable<utils::stock::SDV_KeyDate> table(27);
 
     std::string *currLine;
@@ -538,12 +537,12 @@ void partII::run() {
                 break;
             }
         } else if (input == "ht") {
-            exercise3();
-        } else if (input == "exit") {
-            break;
+            partII::exercise3();
         } else {
             std::cout << "Unrecognized option. Expected BST or HT." << std::endl;
             continue;
         }
+
+        break;
     }
 }

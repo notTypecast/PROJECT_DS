@@ -1,7 +1,5 @@
 project_ds.cbp
 
-CMakeLists.txt
-
 .idea
 
 cmake-build-debug

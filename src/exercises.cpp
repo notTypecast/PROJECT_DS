@@ -550,11 +550,11 @@ void partII::run() {
             }
         } else if (input == "ht") {
             partII::exercise3();
+        } else if (input == "exit") {
+            break;
         } else {
             std::cout << "Unrecognized option. Expected BST or HT." << std::endl;
             continue;
         }
-
-        break;
     }
 }

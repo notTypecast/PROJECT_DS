@@ -62,7 +62,6 @@ namespace ds {
         int height;
     };
 
-    //TODO: mention that LinkedKey's destructor is responsible for deleting next, but not key
     template<typename T>
     struct LinkedKey {
         LinkedKey();

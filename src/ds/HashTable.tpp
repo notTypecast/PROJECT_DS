@@ -1,5 +1,10 @@
 template <typename T>
-ds::HashTable<T>::HashTable(unsigned int M) : M(M), internalArray(new LinkedKey<T>*[M]) {}
+ds::HashTable<T>::HashTable(unsigned int M) : M(M), internalArray(new LinkedKey<T>*[M]) {
+    // making sure all pointers in array have an initial value of nullptr
+    for (int i = 0; i < M; ++i) {
+        internalArray[i] = nullptr;
+    }
+}
 
 template <typename T>
 ds::HashTable<T>::~HashTable() {

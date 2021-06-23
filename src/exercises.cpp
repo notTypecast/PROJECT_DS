@@ -216,8 +216,14 @@ void partI::exercise3() {
 
     std::cout << "Average interpolation search time: " << averageInterpolationSearchTime << "ns" << std::endl;
 
-    std::cout << "Volume for " << inputDate << ": " << algo::binarySearch(initialData, 0, dataSize - 1, inputDate)
-              << std::endl;
+    int volume = algo::binarySearch(initialData, 0, dataSize - 1, inputDate);
+
+    if (volume != -1) {
+        std::cout << "Volume for " << inputDate << ": " << volume << std::endl;
+    }
+    else {
+        std::cout << "Date not found." << std::endl;
+    }
 
     delete[] initialData;
 }
@@ -275,8 +281,14 @@ void partI::exercise4() {
     std::cout << "Average BIS time with improved worst-time complexity: " << averageImprovedBISTime << "ns"
               << std::endl;
 
-    std::cout << "Volume for " << inputDate << ": " << algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp)
-              << std::endl;
+    int volume = algo::binaryInterpolationSearch(initialData, dataSize, dateTimestamp);
+
+    if (volume != -1) {
+        std::cout << "Volume for " << inputDate << ": " << volume << std::endl;
+    }
+    else {
+        std::cout << "Date not found." << std::endl;
+    }
 
     delete[] initialData;
 }
